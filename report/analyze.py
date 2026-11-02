@@ -65,22 +65,24 @@ HUB_LABELS = {
     "SPPNORTH_HUB": "North Hub", "SPPSOUTH_HUB": "South Hub",
 }
 
-# (regex on product name, Chinese label, sort order)
+# (regex on normalized product name, Chinese label, sort order); first match wins
 AS_LABELS = [
     (r"mileage", None, 99),  # dropped
-    (r"10 ?min.*non|tmnsr|non-?spin|non-?synchron|nspin|^nr$", "非旋转备用", 7),
-    (r"(reg(ulation)?[ _-]?up|regup|^ru$)", "上调频", 1),
-    (r"(reg(ulation)?[ _-]?(dn|down)|regdn|^rd$)", "下调频", 2),
-    (r"regulation capacity|^reg(ulation)?( mcp)?$|^reg\b|^regulation$|^REG$", "调频", 3),
+    (r"10 ?min.*non|tmnsr|non ?spin|non ?synchron|nspin|^nr$", "非旋转备用", 7),
+    (r"reg(ulation)? ?up|regup|^ru$", "上调频", 1),
+    (r"reg(ulation)? ?(dn|down)|regdn|regdown|^rd$", "下调频", 2),
+    (r"^reg(ulation)?( capacity)?$|^reg\b", "调频", 3),
     (r"responsive|rrs", "响应备用(RRS)", 4),
     (r"ercot contingency|ecrs", "紧急备用(ECRS)", 5),
-    (r"10 ?min.*spin|tmsr|\bspin|synchroni[sz]ed reserve|^sr$", "旋转/同步备用", 6),
+    (r"10 ?min.*spin|tmsr|spin|synchroni[sz]ed|^sr$", "旋转/同步备用", 6),
+    (r"^tmr\b|^ten ?min(ute)? reserve", "10分钟备用(TMR)", 8),
     (r"primary|^pr$", "一级备用", 8),
+    (r"total reserve", "总备用(含30分钟)", 9),
     (r"30 ?min|thirty|tmor", "30分钟备用", 9),
     (r"supp", "补充备用", 10),
-    (r"\bstr\b|short.?term", "短时备用(STR)", 11),
-    (r"ramp.?up|ramp_up", "上爬坡", 12),
-    (r"ramp.?(dn|down)|ramp_dn", "下爬坡", 13),
+    (r"^str\b|\bstr\b|short ?term", "短时备用(STR)", 11),
+    (r"ramp ?up|rampup", "上爬坡", 12),
+    (r"ramp ?(dn|down)|rampdn|rampdown", "下爬坡", 13),
     (r"unc", "不确定性备用", 14),
 ]
 
@@ -90,9 +92,12 @@ INK, INK2, MUTED, GRID = "#1b1b1a", "#52514e", "#8a8984", "#e6e5e0"
 
 
 def as_label(product: str):
-    p = str(product)
+    p = str(product).strip()
+    n = re.sub(r"[_\-]+", " ", p.lower())
+    n = re.sub(r"\b(clearing price|price|mcpc|mcp)\b", "", n)
+    n = re.sub(r"mcp$", "", n).strip()
     for pat, label, order in AS_LABELS:
-        if re.search(pat, p, re.I):
+        if re.search(pat, n, re.I):
             return label, order
     return p, 50
 
@@ -362,7 +367,7 @@ def pick_as_zone(iso, sub):
     zones = sub.zone.astype(str).unique().tolist()
     if not zones:
         return None
-    prefs = {"PJM": ["RTO"], "NYISO": ["EAST"], "ISONE": ["ROS", "REST", "SYSTEM"],
+    prefs = {"PJM": ["RTO"], "NYISO": ["N.Y.C.", "NYC", "EAST"], "ISONE": ["ROS", "REST", "SYSTEM"],
              "CAISO": ["CAISO"], "MISO": [], "ERCOT": [], "SPP": []}.get(iso, [])
     for p in prefs:
         for z in zones:

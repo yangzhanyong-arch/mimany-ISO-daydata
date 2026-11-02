@@ -179,8 +179,14 @@ def tidy_as_wide(df, iso, market, tz, zone_col=None, zone_keep=None, products=No
     zc = zone_col if (zone_col and zone_col in d.columns) else None
     if zc and zone_keep is not None:
         d = d[d[zc].isin(zone_keep)]
-    value_cols = [c for c in d.columns
-                  if c not in AS_ID_COLS and c != zc and pd.api.types.is_numeric_dtype(d[c])]
+    value_cols = []
+    for c in d.columns:
+        if c in AS_ID_COLS or c == zc:
+            continue
+        num = pd.to_numeric(d[c], errors="coerce")
+        if num.notna().mean() > 0.5:
+            d[c] = num
+            value_cols.append(c)
     if products:
         value_cols = [c for c in products if c in value_cols]
     if not value_cols:
@@ -214,6 +220,8 @@ def tidy_as_long(df, iso, market, tz, product_col, zone_col, value_col):
 def tidy_load(df, iso, kind, tz, value_candidates, day=None, latest_publish=True):
     d = df.copy()
     value_col = pick_col(d, value_candidates)
+    if "Interval Start" not in d.columns and "Time" in d.columns:
+        d["Interval Start"] = d["Time"]
     if latest_publish and "Publish Time" in d.columns:
         d = d.sort_values("Publish Time").groupby("Interval Start", as_index=False).last()
     d["interval_start_utc"] = to_utc_hour(d["Interval Start"], tz)
@@ -374,9 +382,13 @@ def fetch_pjm(ctx: Ctx):
         iso.get_load(date=d2), name, "actual", tz, ["Load"], day=d2, latest_publish=False)))
 
 
+_RES_PAT = re.compile(r"reg|spin|supp|str|ramp|mcp|reserve", re.I)
+
+
 def _parse_miso_asm_csv(text: str, day: str, tz: str):
-    """Parse MISO ASM MCP market report CSV (layout-agnostic)."""
+    """Parse a MISO ASM MCP market report CSV (layout-agnostic). Returns long rows."""
     lines = [l for l in text.splitlines() if l.strip()]
+    log.info("MISO ASM raw head: %s", " || ".join(lines[:6])[:700])
     hdr_idx = None
     for i, l in enumerate(lines):
         cells = [c.strip().strip('"').upper() for c in l.split(",")]
@@ -392,10 +404,19 @@ def _parse_miso_asm_csv(text: str, day: str, tz: str):
     base = pd.Timestamp(day).tz_localize(tz)
     if he_cols:  # wide by hour: identifier columns + HE1..HE24
         id_cols = [c for c in df.columns if c not in he_cols]
+        nun = {c: df[c].nunique() for c in id_cols}
+
+        def score(c):  # share of distinct values that look like a reserve product
+            vals = df[c].dropna().astype(str).unique()
+            return (sum(bool(_RES_PAT.search(v)) for v in vals) / max(len(vals), 1)) if 1 < len(vals) <= 30 else -1
+        prod_col = max(id_cols, key=score) if id_cols and max(score(c) for c in id_cols) > 0 else None
+        rest = [c for c in id_cols if c != prod_col]
+        zone_col = next((c for c in rest if "ZONE" in c.upper()), None) or \
+            (max(rest, key=lambda c: nun[c]) if rest else None)
+        log.info("MISO ASM columns: %s | product=%s zone/location=%s (%s distinct)", id_cols, prod_col,
+                 zone_col, nun.get(zone_col))
         long = df.melt(id_vars=id_cols, value_vars=he_cols, var_name="HE", value_name="value")
-        long["he_n"] = long["HE"].str.extract(r"(\d+)").astype(int)
-        zone_col = next((c for c in id_cols if "ZONE" in c.upper()), None)
-        prod_col = next((c for c in id_cols if c != zone_col), None)
+        long["he_n"] = long["HE"].str.extract(r"(\d+)")[0].astype(int)
         long["product"] = long[prod_col].astype(str) if prod_col else "MCP"
         long["zone"] = long[zone_col].astype(str) if zone_col else "System"
     else:  # long by hour: hour column + product columns
@@ -409,7 +430,11 @@ def _parse_miso_asm_csv(text: str, day: str, tz: str):
     long = long.dropna(subset=["he_n"])
     long["Interval Start"] = base + pd.to_timedelta(long["he_n"].astype(int) - 1, unit="h")
     long["value"] = pd.to_numeric(long["value"].astype(str).str.replace(",", ""), errors="coerce")
-    return long[["Interval Start", "product", "zone", "value"]]
+    long = long[["Interval Start", "product", "zone", "value"]].dropna(subset=["value"])
+    if long["zone"].nunique() > 20:  # node-level file: zonal prices repeat on every node
+        long = long.groupby(["Interval Start", "product"], as_index=False)["value"].median()
+        long["zone"] = "全网节点中位数"
+    return long
 
 
 def fetch_miso(ctx: Ctx):
@@ -523,10 +548,10 @@ def fetch_isone(ctx: Ctx):
 
     def as_rt():
         df = iso.get_reserve_zone_prices_designations_real_time_5_min_final(date=d2)
-        zone_col = next((c for c in df.columns if "zone" in c.lower() and "id" not in c.lower()
-                         and df[c].dtype == object), None)
-        price_cols = [c for c in df.columns if "price" in c.lower()
-                      and pd.api.types.is_numeric_dtype(df[c])]
+        zone_col = next((c for c in df.columns if "zone" in c.lower() and "name" in c.lower()), None) or \
+            next((c for c in df.columns if "zone" in c.lower() and "id" not in c.lower()
+                  and not pd.api.types.is_numeric_dtype(df[c])), None)
+        price_cols = [c for c in df.columns if "price" in c.lower()]
         if not price_cols:
             raise ValueError(f"no price columns in {list(df.columns)}")
         keep_cols = ["Interval Start"] + ([zone_col] if zone_col else []) + price_cols
@@ -549,9 +574,18 @@ def fetch_spp(ctx: Ctx):
             tidy_prices(iso.get_lmp_day_ahead_hourly(date=day, location_type="Hub"),
                         name, "DA", tz, hubs), day)))
 
-    keep(ctx.prices, attempt(ctx, name, "rt_lmp_D-2", lambda: only_day(
-        tidy_prices(iso.get_lmp_real_time_5_min_by_location(
-            date=d2, location_type="Hub", use_daily_files=True), name, "RT", tz, hubs), d2)))
+    def rt():
+        try:
+            df = iso.get_lmp_real_time_5_min_by_location(date=d2, location_type="Hub", use_daily_files=True)
+            ctx.notes["SPP_rt_source"] = "daily file"
+        except Exception as e:  # noqa: BLE001
+            log.warning("SPP daily RT file not available (%s); using 5-minute interval files", e)
+            start = pd.Timestamp(d2).tz_localize(tz)
+            df = iso.get_lmp_real_time_5_min_by_location(date=start, end=start + pd.Timedelta(days=1),
+                                                         location_type="Hub")
+            ctx.notes["SPP_rt_source"] = "5-minute interval files"
+        return only_day(tidy_prices(df, name, "RT", tz, hubs), d2)
+    keep(ctx.prices, attempt(ctx, name, "rt_lmp_D-2", rt, tries=2))
 
     for label, day in (("D", d0), ("D-1", d1)):
         keep(ctx.as_prices, attempt(ctx, name, f"as_da_{label}", lambda day=day: only_day(
@@ -560,8 +594,40 @@ def fetch_spp(ctx: Ctx):
 
     keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: tidy_load(
         iso.get_load_forecast(date=d0), name, "forecast", tz, ["Load Forecast"], day=d0)))
-    keep(ctx.load, attempt(ctx, name, "load_actual_D-2", lambda: tidy_load(
-        iso.get_load(date=d2), name, "actual", tz, ["Load"], day=d2, latest_publish=False)))
+    def la():
+        errors = []
+        # 1) mid-term forecast file published just after midnight of D-1 carries the past 24h actuals
+        try:
+            t = pd.Timestamp(d1).tz_localize(tz) + pd.Timedelta(minutes=20)
+            df = iso.get_load_forecast_mid_term(date=t)
+            col = next((c for c in df.columns if "actual" in c.lower()), None)
+            log.info("SPP MTLF columns: %s", list(df.columns))
+            if col is not None:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+                g = df.dropna(subset=[col]).groupby("Interval Start", as_index=False)[col].sum(min_count=1)
+                out = tidy_load(g, name, "actual", tz, [col], day=d2, latest_publish=False)
+                if len(out) >= 20:
+                    ctx.notes["SPP_load_actual_source"] = "MTLF averaged actual"
+                    return out
+                errors.append(f"MTLF actual rows for {d2}: {len(out)}")
+        except Exception as e:  # noqa: BLE001
+            errors.append(f"MTLF: {e}")
+        # 2) daily hourly-load file (one-day delay), BA-level rows
+        try:
+            df = iso.get_hourly_load(date=d2)
+            log.info("SPP hourly load types: %s", df["Forecast Area Type"].astype(str).unique().tolist()[:10])
+            ba = df[df["Forecast Area Type"].astype(str).str.upper().str.contains("BA")]
+            use = ba if len(ba) else df
+            g = use.groupby("Interval Start", as_index=False)["Load"].sum(min_count=1)
+            out = tidy_load(g, name, "actual", tz, ["Load"], day=d2, latest_publish=False)
+            if len(out) >= 20:
+                ctx.notes["SPP_load_actual_source"] = "daily hourly load file"
+                return out
+            errors.append(f"hourly load rows: {len(out)}")
+        except Exception as e:  # noqa: BLE001
+            errors.append(f"hourly load: {e}")
+        raise ValueError("; ".join(errors)[:400])
+    keep(ctx.load, attempt(ctx, name, "load_actual_D-2", la, tries=2))
 
 
 FETCHERS = {
