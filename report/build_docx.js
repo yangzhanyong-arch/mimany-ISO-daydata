@@ -56,9 +56,9 @@ function para(children, o = {}) {
   return new Paragraph({ children, alignment: o.align || AlignmentType.LEFT, spacing,
     keepNext: !!o.keepNext, numbering: o.numbering });
 }
-function h1(text) {
+function h1(text, o = {}) {
   return new Paragraph({ heading: HeadingLevel.HEADING_1, children: [run(text, { size: 30, bold: true })],
-    spacing: { before: 280, after: 140 }, keepNext: true });
+    spacing: { before: o.pageBreak ? 0 : 240, after: 120 }, keepNext: true, pageBreakBefore: !!o.pageBreak });
 }
 function h2(text) {
   return new Paragraph({ heading: HeadingLevel.HEADING_2, children: [run(text, { size: 26, bold: true })],
@@ -159,7 +159,7 @@ children.push(new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 
 children.push(para([run(`日前运行日 ${D}　｜　实时运行日 ${D2}　｜　生成时间 北京时间 ${S.generated_at_bj}`, { size: 19, color: INK2 })],
   { after: 40 }));
 children.push(muted("覆盖 CAISO、ERCOT、PJM、MISO、NYISO、ISO-NE、SPP。运行日均为各ISO当地日期；HE 为小时结束编号（HE1 = 0:00–1:00）。" +
-  "能量价格单位 $/MWh，辅助服务价格单位 $/MW·h。", { after: 200 }));
+  "能量价格单位 $/MWh，辅助服务价格单位 $/MW·h。", { after: 100 }));
 
 // 1. headline
 children.push(h1("一、要点概览"));
@@ -181,13 +181,12 @@ children.push(...table(`各ISO核心指标（主枢纽；日前 ${D}，实时 ${
 children.push(...figure(S.charts.overview_profiles, `各ISO主枢纽日前逐时价格（${D}）`));
 
 // 3. per ISO
-children.push(new Paragraph({ children: [new PageBreak()] }));
-children.push(h1("三、分区域详情"));
+children.push(h1("三、分区域详情", { pageBreak: true }));
 ISO_ORDER.forEach((iso, idx) => {
   const X = S.isos[iso];
   if (!X) return;
-  if (idx > 0) children.push(new Paragraph({ children: [new PageBreak()] }));
-  children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, keepNext: true, spacing: { before: 120, after: 100 },
+  children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, keepNext: true, pageBreakBefore: idx > 0,
+    spacing: { before: idx > 0 ? 0 : 120, after: 100 },
     children: [run(`${idx + 1}. ${X.label}｜${X.name_cn}`, { size: 26, bold: true }),
       run(`　　${X.tz_cn} · 主枢纽 ${X.main_hub}`, { size: 17, color: MUTED })] }));
   const comment = (C.iso && C.iso[iso]) || "（本期未生成点评）";
@@ -233,17 +232,16 @@ ISO_ORDER.forEach((iso, idx) => {
       { title: "项目", width: 20 }, { title: "峰值(时段)", width: 28 }, { title: "日均", width: 16 }, { title: "谷值(时段)", width: 28 },
     ], lRows, HALF_W);
   }
-  if (leftBlk.length || rightBlk.length) children.push(...sideBySideBlocks(leftBlk, rightBlk));
+  if (leftBlk.length || rightBlk.length) children.push(...sideBySideBlocks(leftBlk, rightBlk).slice(0, 1));
   if (X.failed_datasets && X.failed_datasets.length) {
     children.push(muted(`数据缺失：${X.failed_datasets.join("、")}（详见第四部分）`));
   }
 });
 
 // 4. notes
-children.push(new Paragraph({ children: [new PageBreak()] }));
-children.push(h1("四、数据说明"));
+children.push(h1("四、数据说明", { pageBreak: true }));
 const notes = [
-  "数据来源：各ISO官方公开数据，通过开源库 gridstatus 采集；采集任务由 GitHub Actions 每日约北京时间 7:20 运行。",
+  "数据来源：各ISO官方公开数据，通过开源库 gridstatus 采集；采集任务由 GitHub Actions 每日北京时间 06:47 运行（08:17 重试失败项）。",
   `日前价格为日前市场节点边际电价（ERCOT 为结算点价格 SPP），本期运行日 ${D}；“较前日”对比 ${D1}。`,
   `实时价格为 ${D2} 实时市场价格的小时均值：CAISO 为 5 分钟 RTD，ERCOT 为 15 分钟 SPP，SPP 为 5 分钟 LMP，PJM、MISO、NYISO、ISO-NE 为官方小时价格（MISO 为初步值，PJM 视发布情况为已核实或未核实值）。` +
   "“日前−实时”为同一运行日日前均价减实时均价，正值表示日前溢价。",

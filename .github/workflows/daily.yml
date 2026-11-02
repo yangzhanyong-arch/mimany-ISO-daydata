@@ -60,9 +60,9 @@ jobs:
           if [ "$SCHEDULE" = "17 0 * * *" ]; then ARGS+=(--retry-failed); fi
           python fetch/fetch_iso.py --out data "${ARGS[@]}"
 
-      - name: Prune old data (keep latest 120 days)
+      - name: Prune old data (keep latest 60 days)
         run: |
-          ls -1d data/20??-??-?? 2>/dev/null | sort | head -n -120 | xargs -r rm -rf
+          ls -1d data/20??-??-?? 2>/dev/null | sort | head -n -60 | xargs -r rm -rf
 
       - name: Commit data
         if: always()

@@ -340,7 +340,7 @@ def chart_overview_bar(rows, d0, d1, path):
 
 
 def chart_overview_profiles(pr, d0, path):
-    fig, ax = plt.subplots(figsize=(6.6, 2.7), layout="constrained")
+    fig, ax = plt.subplots(figsize=(6.6, 2.35), layout="constrained")
     ax.set_title(f"各ISO主枢纽日前逐时价格（{d0}，各自当地时间，$/MWh）", loc="left")
     hs, labels = [], []
     ymin = None
