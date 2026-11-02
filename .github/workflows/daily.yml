@@ -1,0 +1,79 @@
+name: daily-iso-fetch
+
+# Fetches US ISO market data for the daily report and commits it to data/<D>/.
+#   22:47 UTC = 06:47 Beijing: full fetch
+#   00:17 UTC = 08:17 Beijing: retry ISOs that still have failed datasets
+on:
+  schedule:
+    - cron: "47 22 * * *"
+    - cron: "17 0 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Report date D (YYYY-MM-DD, Beijing). Empty = today in Beijing"
+        required: false
+        default: ""
+      isos:
+        description: "Comma-separated ISO subset, e.g. PJM,MISO (empty = all)"
+        required: false
+        default: ""
+  push:
+    branches: [main]
+    paths:
+      - "fetch/**"
+      - "requirements.txt"
+      - ".github/workflows/daily.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-iso-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch ISO data
+        env:
+          PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
+          MISO_API_PRICING_SUBSCRIPTION_KEY: ${{ secrets.MISO_API_PRICING_SUBSCRIPTION_KEY }}
+          IN_DATE: ${{ github.event.inputs.date }}
+          IN_ISOS: ${{ github.event.inputs.isos }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          ARGS=()
+          if [ -n "$IN_DATE" ]; then ARGS+=(--date "$IN_DATE"); fi
+          if [ -n "$IN_ISOS" ]; then ARGS+=(--isos "$IN_ISOS"); fi
+          if [ "$SCHEDULE" = "17 0 * * *" ]; then ARGS+=(--retry-failed); fi
+          python fetch/fetch_iso.py --out data "${ARGS[@]}"
+
+      - name: Prune old data (keep latest 120 days)
+        run: |
+          ls -1d data/20??-??-?? 2>/dev/null | sort | head -n -120 | xargs -r rm -rf
+
+      - name: Commit data
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "data: $(TZ=Asia/Shanghai date +%F) run ${GITHUB_RUN_NUMBER}"
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
