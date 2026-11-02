@@ -489,8 +489,10 @@ def build(args):
             for key, nm in (("da", "日前"), ("rt", "实时")):
                 if h[key] and h[key]["neg_hours"]:
                     flags.append(f"{h['label']} {nm}出现 {h[key]['neg_hours']} 个负电价小时（最低 {h[key]['min']}，HE{h[key]['min_he']}）")
-            if h["da_chg_pct"] is not None and abs(h["da_chg_pct"]) >= 20:
-                flags.append(f"{h['label']} 日前均价较前日变化 {h['da_chg_pct']}%")
+            prev_avg = h["da_prev"]["avg"] if h["da_prev"] else None
+            if h["da_chg"] is not None and (abs(h["da_chg"]) >= 10 or (
+                    prev_avg is not None and abs(prev_avg) >= 10 and abs(h["da_chg_pct"] or 0) >= 20)):
+                flags.append(f"{h['label']} 日前均价 {h['da']['avg']}，较前日 {h['da_chg']:+} $/MWh")
             if h.get("da_minus_rt") is not None and h["da"] and abs(h["da_minus_rt"]) >= 10:
                 flags.append(f"{h['label']} {d2} 日前-实时均价差 {h['da_minus_rt']} $/MWh")
 
@@ -505,6 +507,7 @@ def build(args):
             "iso": iso, "label": info["label"], "main_hub": HUB_LABELS.get(hubs[0], hubs[0]),
             "da_avg": main["da"]["avg"] if main and main["da"] else None,
             "da_prev_avg": main["da_prev"]["avg"] if main and main["da_prev"] else None,
+            "da_chg": main["da_chg"] if main else None,
             "da_chg_pct": main["da_chg_pct"] if main else None,
             "da_max": main["da"]["max"] if main and main["da"] else None,
             "da_max_he": main["da"]["max_he"] if main and main["da"] else None,

@@ -169,7 +169,7 @@ children.push(...bullets(headline));
 // 2. overview
 children.push(h1("二、市场总览"));
 const ovRows = S.overview.map((o) => [
-  o.label, o.main_hub, f2(o.da_avg), sgnPct(o.da_chg_pct), withHe(o.da_max, S.isos[o.iso]?.hubs?.[0]?.da?.max_he ?? o.da_max_he),
+  o.label, o.main_hub, f2(o.da_avg), sgn(o.da_chg, f2), withHe(o.da_max, S.isos[o.iso]?.hubs?.[0]?.da?.max_he ?? o.da_max_he),
   f2(o.rt_avg), sgn(o.da_minus_rt, f2), gw(o.load_fc_peak), gw(o.load_act_peak),
 ]);
 children.push(...table(`各ISO核心指标（主枢纽；日前 ${D}，实时 ${D2}）`, [
