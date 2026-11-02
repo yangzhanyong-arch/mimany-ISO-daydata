@@ -431,10 +431,26 @@ def _parse_miso_asm_csv(text: str, day: str, tz: str):
     long["Interval Start"] = base + pd.to_timedelta(long["he_n"].astype(int) - 1, unit="h")
     long["value"] = pd.to_numeric(long["value"].astype(str).str.replace(",", ""), errors="coerce")
     long = long[["Interval Start", "product", "zone", "value"]].dropna(subset=["value"])
-    if long["zone"].nunique() > 20:  # node-level file: zonal prices repeat on every node
+    zone = long["zone"].astype(str).str.strip()
+    wide = long[zone.str.upper().str.contains("MISO WIDE")]
+    if len(wide):  # system-wide MCP rows
+        long = wide.assign(zone="MISO Wide")
+    elif long["zone"].nunique() > 20:  # node-level file: zonal prices repeat on every node
         long = long.groupby(["Interval Start", "product"], as_index=False)["value"].median()
         long["zone"] = "全网节点中位数"
+    prod = long["product"].astype(str).str.upper().str.strip()
+    if prod.str.startswith("GEN").any():  # GEN/DEM/SER variants: keep the generator prices
+        long = long[prod.str.startswith("GEN")]
+    long["product"] = long["product"].map(_miso_product_name)
     return long
+
+
+def _miso_product_name(code: str) -> str:
+    base = re.sub(r"^(GEN|DEM|SER)", "", str(code).upper().strip())
+    base = re.sub(r"MCP$", "", base)
+    return {"REG": "Regulation", "SPIN": "Spinning Reserve", "SUPP": "Supplemental Reserve",
+            "STR": "Short-Term Reserve", "RAMPUP": "Ramp Up", "RCUP": "Ramp Up", "URC": "Ramp Up",
+            "RAMPDN": "Ramp Down", "RAMPDOWN": "Ramp Down", "RCDN": "Ramp Down", "DRC": "Ramp Down"}.get(base, str(code))
 
 
 def fetch_miso(ctx: Ctx):
@@ -546,8 +562,33 @@ def fetch_isone(ctx: Ctx):
     keep(ctx.prices, attempt(ctx, name, "rt_lmp_D-2", lambda: only_day(
         tidy_prices(iso.get_lmp_real_time_hourly(date=d2), name, "RT", tz, hubs), d2)))
 
+    def reserve_prices(kind):
+        from gridstatus.isone import _make_request
+        ds = pd.Timestamp(d2).strftime("%Y%m%d")
+        url = f"https://www.iso-ne.com/transform/csv/fiveminreserveprice?type={kind}&start={ds}&end={ds}"
+        df = _make_request(url, skiprows=[0, 1, 2, 3, 5], verbose=False)
+        df.columns = df.columns.str.strip().str.replace('"', "")
+        if df.empty or "Local Time" not in df.columns:
+            raise ValueError(f"ISO-NE {kind} reserve prices empty for {d2}")
+        df["Interval Start"] = df.groupby("Reserve Zone ID", group_keys=False)["Local Time"].apply(
+            lambda x: pd.to_datetime(x).dt.tz_localize(tz, ambiguous="infer"))
+        return df.rename(columns={
+            "Ten-Minute Spinning Reserve Clearing Price": "TMSR Clearing Price",
+            "Ten-Minute Reserve Clearing Price": "TMR Clearing Price"})
+
     def as_rt():
-        df = iso.get_reserve_zone_prices_designations_real_time_5_min_final(date=d2)
+        df, errs = None, []
+        for kind in ("final", "prelim", "preliminary"):
+            try:
+                df = reserve_prices(kind)
+                if len(df):
+                    ctx.notes["ISONE_reserve_source"] = kind
+                    break
+            except Exception as e:  # noqa: BLE001
+                errs.append(f"{kind}: {e}")
+                df = None
+        if df is None:
+            raise ValueError("; ".join(errs)[:400])
         zone_col = next((c for c in df.columns if "zone" in c.lower() and "name" in c.lower()), None) or \
             next((c for c in df.columns if "zone" in c.lower() and "id" not in c.lower()
                   and not pd.api.types.is_numeric_dtype(df[c])), None)
