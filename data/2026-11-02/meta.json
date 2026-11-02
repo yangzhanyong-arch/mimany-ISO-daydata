@@ -1,0 +1,368 @@
+{
+  "report_date": "2026-11-02",
+  "da_day": "2026-11-02",
+  "da_prev_day": "2026-11-01",
+  "rt_day": "2026-10-31",
+  "generated_at_utc": "2026-11-02T13:58:39Z",
+  "gridstatus_version": "0.37.0",
+  "timezones": {
+    "CAISO": "US/Pacific",
+    "ERCOT": "US/Central",
+    "PJM": "US/Eastern",
+    "MISO": "EST",
+    "NYISO": "US/Eastern",
+    "ISONE": "US/Eastern",
+    "SPP": "US/Central"
+  },
+  "hubs": {
+    "CAISO": [
+      "TH_SP15_GEN-APND",
+      "TH_NP15_GEN-APND",
+      "TH_ZP26_GEN-APND"
+    ],
+    "ERCOT": [
+      "HB_NORTH",
+      "HB_HOUSTON",
+      "HB_SOUTH",
+      "HB_WEST",
+      "HB_HUBAVG"
+    ],
+    "PJM": [
+      "WESTERN HUB",
+      "AEP-DAYTON HUB",
+      "N ILLINOIS HUB",
+      "EASTERN HUB",
+      "DOMINION HUB"
+    ],
+    "MISO": [
+      "INDIANA.HUB",
+      "ILLINOIS.HUB",
+      "MICHIGAN.HUB",
+      "MINN.HUB",
+      "LOUISIANA.HUB"
+    ],
+    "NYISO": [
+      "N.Y.C.",
+      "HUD VL",
+      "CAPITL",
+      "WEST",
+      "LONGIL"
+    ],
+    "ISONE": [
+      ".H.INTERNAL_HUB",
+      ".Z.NEMASSBOST",
+      ".Z.CONNECTICUT",
+      ".Z.MAINE"
+    ],
+    "SPP": [
+      "SPPNORTH_HUB",
+      "SPPSOUTH_HUB"
+    ]
+  },
+  "rows": {
+    "prices": 2760,
+    "as_prices": 84929,
+    "load": 288
+  },
+  "status": {
+    "CAISO": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 72,
+        "seconds": 5.6
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 75,
+        "seconds": 5.5
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 72,
+        "seconds": 5.8
+      },
+      "rt_lmp_D-2": {
+        "ok": true,
+        "rows": 72,
+        "seconds": 6.5
+      },
+      "as_da_D-1_D": {
+        "ok": true,
+        "rows": 196,
+        "seconds": 8.9
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 5.0
+      },
+      "load_actual_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.5
+      }
+    },
+    "ERCOT": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 1.1
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 125,
+        "seconds": 1.3
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 1.4
+      },
+      "rt_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 32.7
+      },
+      "as_da_D": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.7
+      },
+      "as_da_D-1": {
+        "ok": true,
+        "rows": 125,
+        "seconds": 0.3
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.7
+      },
+      "load_actual_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.7
+      }
+    },
+    "PJM": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 3.7
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 125,
+        "seconds": 2.9
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 4.0
+      },
+      "rt_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 1.2
+      },
+      "as_da_D": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.2
+      },
+      "as_da_D-1": {
+        "ok": true,
+        "rows": 125,
+        "seconds": 0.6
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 1.2
+      },
+      "load_actual_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.6
+      }
+    },
+    "MISO": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.5
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.4
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.5
+      },
+      "rt_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.4
+      },
+      "as_da_D": {
+        "ok": true,
+        "rows": 40872,
+        "seconds": 0.6
+      },
+      "as_da_D-1": {
+        "ok": true,
+        "rows": 40872,
+        "seconds": 0.7
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.1
+      },
+      "load_actual_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.1
+      }
+    },
+    "NYISO": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.3
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 125,
+        "seconds": 0.2
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.2
+      },
+      "rt_lmp_D-2": {
+        "ok": true,
+        "rows": 120,
+        "seconds": 0.2
+      },
+      "as_da_D": {
+        "ok": true,
+        "rows": 1056,
+        "seconds": 0.2
+      },
+      "as_da_D-1": {
+        "ok": true,
+        "rows": 1100,
+        "seconds": 0.2
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
+      },
+      "load_actual_D-2": {
+        "ok": false,
+        "error": "KeyError: 'Interval Start'"
+      }
+    },
+    "ISONE": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 96,
+        "seconds": 1.3
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 100,
+        "seconds": 1.1
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 96,
+        "seconds": 1.1
+      },
+      "rt_lmp_D-2": {
+        "ok": true,
+        "rows": 96,
+        "seconds": 2.1
+      },
+      "as_rt_D-2": {
+        "ok": false,
+        "error": "ValueError: no price columns in ['Interval Start', 'Interval End', 'Reserve Zone ID', 'Reserve Zone Name', 'Ten Min Spin Requirement', 'Ten Min Requirement', 'Total Requirement', 'TMSR Designated MW', 'TMNSR Designated MW', 'TMOR Designated MW', 'TMSR Clearing Price', 'TMR Clearing Price', 'Total Reserve Clearing Price']"
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.1
+      },
+      "load_actual_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.5
+      }
+    },
+    "SPP": {
+      "da_lmp_D": {
+        "ok": true,
+        "rows": 48,
+        "seconds": 6.2
+      },
+      "da_lmp_D-1": {
+        "ok": true,
+        "rows": 50,
+        "seconds": 5.4
+      },
+      "da_lmp_D-2": {
+        "ok": true,
+        "rows": 48,
+        "seconds": 20.9
+      },
+      "rt_lmp_D-2": {
+        "ok": false,
+        "error": "HTTPError: HTTP Error 404: "
+      },
+      "as_da_D": {
+        "ok": true,
+        "rows": 168,
+        "seconds": 0.9
+      },
+      "as_da_D-1": {
+        "ok": true,
+        "rows": 175,
+        "seconds": 0.4
+      },
+      "load_forecast_D": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.4
+      },
+      "load_actual_D-2": {
+        "ok": false,
+        "error": "ValueError: empty result after filtering"
+      }
+    }
+  },
+  "notes": {
+    "CAISO_as_region": "AS_CAISO_EXP",
+    "PJM_key_source": "public",
+    "PJM_rt_source": "unverified"
+  },
+  "runs": [
+    {
+      "at_utc": "2026-11-02T13:58:39Z",
+      "isos": [
+        "CAISO",
+        "ERCOT",
+        "PJM",
+        "MISO",
+        "NYISO",
+        "ISONE",
+        "SPP"
+      ]
+    }
+  ]
+}
