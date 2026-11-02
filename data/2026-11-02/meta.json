@@ -3,7 +3,7 @@
   "da_day": "2026-11-02",
   "da_prev_day": "2026-11-01",
   "rt_day": "2026-10-31",
-  "generated_at_utc": "2026-11-02T13:58:39Z",
+  "generated_at_utc": "2026-11-02T14:10:43Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -60,16 +60,16 @@
     ]
   },
   "rows": {
-    "prices": 2760,
-    "as_prices": 84929,
-    "load": 288
+    "prices": 2808,
+    "as_prices": 3521,
+    "load": 336
   },
   "status": {
     "CAISO": {
       "da_lmp_D": {
         "ok": true,
         "rows": 72,
-        "seconds": 5.6
+        "seconds": 5.8
       },
       "da_lmp_D-1": {
         "ok": true,
@@ -79,22 +79,22 @@
       "da_lmp_D-2": {
         "ok": true,
         "rows": 72,
-        "seconds": 5.8
+        "seconds": 5.5
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 72,
-        "seconds": 6.5
+        "seconds": 6.3
       },
       "as_da_D-1_D": {
         "ok": true,
         "rows": 196,
-        "seconds": 8.9
+        "seconds": 13.4
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 5.0
+        "seconds": 4.5
       },
       "load_actual_D-2": {
         "ok": true,
@@ -106,69 +106,69 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.1
+        "seconds": 1.0
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 125,
-        "seconds": 1.3
+        "seconds": 1.4
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.4
+        "seconds": 1.3
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 32.7
+        "seconds": 33.0
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.7
+        "seconds": 0.3
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 125,
-        "seconds": 0.3
+        "seconds": 0.9
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.7
+        "seconds": 0.9
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.7
+        "seconds": 0.6
       }
     },
     "PJM": {
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 3.7
+        "seconds": 4.5
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 125,
-        "seconds": 2.9
+        "seconds": 3.9
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 4.0
+        "seconds": 3.9
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.2
+        "seconds": 1.1
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.2
+        "seconds": 0.4
       },
       "as_da_D-1": {
         "ok": true,
@@ -178,12 +178,12 @@
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.2
+        "seconds": 1.4
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.6
+        "seconds": 0.9
       }
     },
     "MISO": {
@@ -195,12 +195,12 @@
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.4
+        "seconds": 0.5
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.5
+        "seconds": 0.3
       },
       "rt_lmp_D-2": {
         "ok": true,
@@ -209,13 +209,13 @@
       },
       "as_da_D": {
         "ok": true,
-        "rows": 40872,
-        "seconds": 0.6
+        "rows": 168,
+        "seconds": 0.3
       },
       "as_da_D-1": {
         "ok": true,
-        "rows": 40872,
-        "seconds": 0.7
+        "rows": 168,
+        "seconds": 0.3
       },
       "load_forecast_D": {
         "ok": true,
@@ -232,7 +232,7 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.3
+        "seconds": 0.2
       },
       "da_lmp_D-1": {
         "ok": true,
@@ -252,7 +252,7 @@
       "as_da_D": {
         "ok": true,
         "rows": 1056,
-        "seconds": 0.2
+        "seconds": 0.1
       },
       "as_da_D-1": {
         "ok": true,
@@ -262,28 +262,29 @@
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.3
+        "seconds": 0.2
       },
       "load_actual_D-2": {
-        "ok": false,
-        "error": "KeyError: 'Interval Start'"
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
       }
     },
     "ISONE": {
       "da_lmp_D": {
         "ok": true,
         "rows": 96,
-        "seconds": 1.3
+        "seconds": 1.2
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 100,
-        "seconds": 1.1
+        "seconds": 0.9
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 96,
-        "seconds": 1.1
+        "seconds": 0.9
       },
       "rt_lmp_D-2": {
         "ok": true,
@@ -292,7 +293,7 @@
       },
       "as_rt_D-2": {
         "ok": false,
-        "error": "ValueError: no price columns in ['Interval Start', 'Interval End', 'Reserve Zone ID', 'Reserve Zone Name', 'Ten Min Spin Requirement', 'Ten Min Requirement', 'Total Requirement', 'TMSR Designated MW', 'TMNSR Designated MW', 'TMOR Designated MW', 'TMSR Clearing Price', 'TMR Clearing Price', 'Total Reserve Clearing Price']"
+        "error": "ValueError: no AS price columns; columns=['Interval Start', 'Reserve Zone Name', 'TMSR Clearing Price', 'TMR Clearing Price', 'Total Reserve Clearing Price']"
       },
       "load_forecast_D": {
         "ok": true,
@@ -302,33 +303,34 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.5
+        "seconds": 0.4
       }
     },
     "SPP": {
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 6.2
+        "seconds": 3.5
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 50,
-        "seconds": 5.4
+        "seconds": 4.3
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 20.9
+        "seconds": 3.3
       },
       "rt_lmp_D-2": {
-        "ok": false,
-        "error": "HTTPError: HTTP Error 404: "
+        "ok": true,
+        "rows": 48,
+        "seconds": 273.0
       },
       "as_da_D": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.9
+        "seconds": 0.3
       },
       "as_da_D-1": {
         "ok": true,
@@ -341,19 +343,34 @@
         "seconds": 0.4
       },
       "load_actual_D-2": {
-        "ok": false,
-        "error": "ValueError: empty result after filtering"
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
       }
     }
   },
   "notes": {
     "CAISO_as_region": "AS_CAISO_EXP",
     "PJM_key_source": "public",
-    "PJM_rt_source": "unverified"
+    "PJM_rt_source": "unverified",
+    "SPP_rt_source": "5-minute interval files",
+    "SPP_load_actual_source": "MTLF averaged actual"
   },
   "runs": [
     {
       "at_utc": "2026-11-02T13:58:39Z",
+      "isos": [
+        "CAISO",
+        "ERCOT",
+        "PJM",
+        "MISO",
+        "NYISO",
+        "ISONE",
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-02T14:10:43Z",
       "isos": [
         "CAISO",
         "ERCOT",
