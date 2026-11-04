@@ -1,0 +1,75 @@
+2026-11-04 02:45:39,889 INFO report date D=2026-11-04 | DA days 2026-11-02,2026-11-03,2026-11-04 | RT day 2026-11-02 | ISOs CAISO,ERCOT,PJM,MISO,NYISO,ISONE,SPP
+2026-11-04 02:45:45,646 INFO CAISO  da_lmp_D               ok  rows=72    5.8s
+2026-11-04 02:45:51,350 INFO CAISO  da_lmp_D-1             ok  rows=72    5.7s
+2026-11-04 02:45:56,807 INFO CAISO  da_lmp_D-2             ok  rows=72    5.5s
+2026-11-04 02:46:03,238 INFO CAISO  rt_lmp_D-2             ok  rows=72    6.4s
+2026-11-04 02:46:11,946 INFO CAISO  as_da_D-1_D            ok  rows=192   8.7s
+2026-11-04 02:46:16,861 INFO CAISO  load_forecast_D        ok  rows=24    4.9s
+2026-11-04 02:46:17,322 INFO CAISO  load_actual_D-2        ok  rows=24    0.5s
+2026-11-04 02:46:17,322 INFO CAISO done in 37s
+2026-11-04 02:46:18,864 INFO ERCOT  da_lmp_D               ok  rows=120   1.5s
+2026-11-04 02:46:20,070 INFO ERCOT  da_lmp_D-1             ok  rows=120   1.2s
+2026-11-04 02:46:21,575 INFO ERCOT  da_lmp_D-2             ok  rows=120   1.5s
+2026-11-04 02:46:55,289 INFO ERCOT  rt_lmp_D-2             ok  rows=120   33.7s
+2026-11-04 02:46:55,760 INFO ERCOT  as_da_D                ok  rows=120   0.5s
+2026-11-04 02:46:56,147 INFO ERCOT  as_da_D-1              ok  rows=120   0.4s
+2026-11-04 02:46:56,911 INFO ERCOT  load_forecast_D        ok  rows=24    0.8s
+2026-11-04 02:46:57,091 INFO ERCOT  load_actual_D-2        ok  rows=24    0.2s
+2026-11-04 02:46:57,091 INFO ERCOT done in 40s
+2026-11-04 02:47:01,197 INFO PJM    da_lmp_D               ok  rows=120   3.7s
+2026-11-04 02:47:05,967 INFO PJM    da_lmp_D-1             ok  rows=120   4.8s
+2026-11-04 02:47:10,120 INFO PJM    da_lmp_D-2             ok  rows=120   4.2s
+2026-11-04 02:47:13,351 INFO PJM    rt_lmp_D-2             ok  rows=120   3.2s
+2026-11-04 02:47:13,680 INFO PJM    as_da_D                ok  rows=120   0.3s
+2026-11-04 02:47:13,955 INFO PJM    as_da_D-1              ok  rows=120   0.3s
+2026-11-04 02:47:15,094 INFO PJM    load_forecast_D        ok  rows=24    1.1s
+2026-11-04 02:47:15,734 INFO PJM    load_actual_D-2        ok  rows=24    0.6s
+2026-11-04 02:47:15,734 INFO PJM done in 19s
+2026-11-04 02:47:16,698 INFO MISO   da_lmp_D               ok  rows=120   1.0s
+2026-11-04 02:47:17,155 INFO MISO   da_lmp_D-1             ok  rows=120   0.5s
+2026-11-04 02:47:17,608 INFO MISO   da_lmp_D-2             ok  rows=120   0.5s
+2026-11-04 02:47:18,076 INFO MISO   rt_lmp_D-2             ok  rows=120   0.5s
+2026-11-04 02:47:18,423 INFO MISO ASM raw head: Dayahead Market ExAnte MCPs. || 11/04/2026,,All Hours-Ending are Eastern Standard Time (EST) || ,,MCP Type, HE 1,HE 2,HE 3,HE 4,HE 5,HE 6,HE 7,HE 8,HE 9,HE 10,HE 11,HE 12,HE 13,HE 14,HE 15,HE 16,HE 17,HE 18,HE 19,HE 20,HE 21,HE 22,HE 23,HE 24 || MISO Wide,-,DEMREGMCP,18.76,16.2,14.91,14.73,15.64,17.14,21.94,29.71,20.41,17.45,15.28,17.05,18.27,16.21,18.21,19.63,19.19,30.1,23.61,21.05,18.27,18.91,24.04,18.66 || MISO Wide,-,GENREGMCP,18.76,16.2,14.91,14.73,15.64,17.14,21.94,29.71,20.41,17.45,15.28,17.05,18.27,16.21,18.21,19.63,19.19,30.1,23.61,21.05,18.27,18.91,24.04,18.66 || MISO Wide,-,DEMSPINMCP,1,.95,.53,.7,.7,2,3.98,9.42,2.5,2.5,2,2.5,2.5,2.5,2.5,2.65,3.5,9.99,5,5,2.7,2.5,2.5,2.34
+2026-11-04 02:47:18,437 INFO MISO ASM columns: ['Unnamed: 0', 'Unnamed: 1', 'MCP Type'] | product=MCP Type zone/location=Unnamed: 0 (1703 distinct)
+2026-11-04 02:47:18,709 INFO MISO   as_da_D                ok  rows=72    0.6s
+2026-11-04 02:47:19,028 INFO MISO ASM raw head: Dayahead Market ExAnte MCPs. || 11/03/2026,,All Hours-Ending are Eastern Standard Time (EST) || ,,MCP Type, HE 1,HE 2,HE 3,HE 4,HE 5,HE 6,HE 7,HE 8,HE 9,HE 10,HE 11,HE 12,HE 13,HE 14,HE 15,HE 16,HE 17,HE 18,HE 19,HE 20,HE 21,HE 22,HE 23,HE 24 || MISO Wide,-,DEMREGMCP,18.66,18.42,19.69,14.08,16.16,19.29,24.44,24.16,20.08,19.12,16.94,18.27,20.49,19.13,19.4,23.67,31.7,40.87,30,24.97,23.21,18.27,19.74,19.11 || MISO Wide,-,GENREGMCP,18.66,18.42,19.69,14.08,16.16,19.29,24.44,24.16,20.08,19.12,16.94,18.27,20.49,19.13,19.4,23.67,31.7,40.87,30,24.97,23.21,18.27,19.74,19.11 || MISO Wide,-,DEMSPINMCP,.68,.52,.54,.32,.41,2.16,5,5.72,2.5,1.74,1.87,2.5,2.5,2.82,3,4,7,14.3,7.21,6.53,3.5,2.5,2.5,2.43
+2026-11-04 02:47:19,042 INFO MISO ASM columns: ['Unnamed: 0', 'Unnamed: 1', 'MCP Type'] | product=MCP Type zone/location=Unnamed: 0 (1703 distinct)
+2026-11-04 02:47:19,350 INFO MISO   as_da_D-1              ok  rows=72    0.6s
+2026-11-04 02:47:19,394 WARNING MISO df_al 2026-11-04 not available: HTTP Error 404: The specified blob does not exist.
+2026-11-04 02:47:19,541 INFO MISO   load_forecast_D        ok  rows=24    0.2s
+2026-11-04 02:47:19,591 WARNING MISO df_al 2026-11-04 not available: HTTP Error 404: The specified blob does not exist.
+2026-11-04 02:47:19,626 INFO MISO   load_actual_D-2        ok  rows=24    0.1s
+2026-11-04 02:47:19,627 INFO MISO done in 4s
+2026-11-04 02:47:19,936 INFO NYISO  da_lmp_D               ok  rows=120   0.3s
+2026-11-04 02:47:20,230 INFO NYISO  da_lmp_D-1             ok  rows=120   0.3s
+2026-11-04 02:47:20,523 INFO NYISO  da_lmp_D-2             ok  rows=120   0.3s
+2026-11-04 02:47:20,769 INFO NYISO  rt_lmp_D-2             ok  rows=120   0.2s
+2026-11-04 02:47:21,063 INFO NYISO  as_da_D                ok  rows=1056  0.3s
+2026-11-04 02:47:21,281 INFO NYISO  as_da_D-1              ok  rows=1056  0.2s
+2026-11-04 02:47:21,555 INFO NYISO  load_forecast_D        ok  rows=24    0.3s
+2026-11-04 02:47:21,757 INFO NYISO  load_actual_D-2        ok  rows=24    0.2s
+2026-11-04 02:47:21,757 INFO NYISO done in 2s
+2026-11-04 02:47:23,308 INFO ISONE  da_lmp_D               ok  rows=96    1.6s
+2026-11-04 02:47:24,606 INFO ISONE  da_lmp_D-1             ok  rows=96    1.3s
+2026-11-04 02:47:25,766 INFO ISONE  da_lmp_D-2             ok  rows=96    1.2s
+2026-11-04 02:47:28,160 INFO ISONE  rt_lmp_D-2             ok  rows=96    2.4s
+2026-11-04 02:47:28,786 INFO ISONE  as_rt_D-2              ok  rows=288   0.6s
+2026-11-04 02:47:28,982 INFO ISONE  load_forecast_D        ok  rows=24    0.2s
+2026-11-04 02:47:29,443 INFO ISONE  load_actual_D-2        ok  rows=24    0.5s
+2026-11-04 02:47:29,443 INFO ISONE done in 8s
+2026-11-04 02:47:34,459 INFO SPP    da_lmp_D               ok  rows=48    5.0s
+2026-11-04 02:47:38,279 INFO SPP    da_lmp_D-1             ok  rows=48    3.8s
+2026-11-04 02:47:42,443 INFO SPP    da_lmp_D-2             ok  rows=48    4.2s
+2026-11-04 02:47:42,733 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-04 02:52:03,073 INFO SPP    rt_lmp_D-2             ok  rows=48    260.6s
+2026-11-04 02:52:03,446 INFO SPP    as_da_D                ok  rows=168   0.4s
+2026-11-04 02:52:03,801 INFO SPP    as_da_D-1              ok  rows=168   0.4s
+2026-11-04 02:52:03,802 WARNING SPP    load_forecast_D        attempt 1 failed: NoDataFoundException: No load forecast by BAA data found for 2026-11-04
+2026-11-04 02:52:23,803 WARNING SPP    load_forecast_D        attempt 2 failed: NoDataFoundException: No load forecast by BAA data found for 2026-11-04
+2026-11-04 02:53:23,804 WARNING SPP    load_forecast_D        attempt 3 failed: NoDataFoundException: No load forecast by BAA data found for 2026-11-04
+2026-11-04 02:53:23,804 ERROR SPP    load_forecast_D        FAILED
+2026-11-04 02:53:24,163 INFO SPP MTLF columns: ['Interval Start', 'Interval End', 'Publish Time', 'Forecast Type', 'MTLF', 'Averaged Actual', 'BAA']
+2026-11-04 02:53:24,168 INFO SPP    load_actual_D-2        ok  rows=24    0.4s
+2026-11-04 02:53:24,168 INFO SPP done in 355s
+2026-11-04 02:53:24,228 INFO this run: datasets ok 53/54 | file rows {'prices': 2784, 'as_prices': 3552, 'load': 312}
+2026-11-04 02:53:24,228 INFO   SPP still failing: load_forecast_D
