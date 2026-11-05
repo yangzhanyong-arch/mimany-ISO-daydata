@@ -3,7 +3,7 @@
   "da_day": "2026-11-05",
   "da_prev_day": "2026-11-04",
   "rt_day": "2026-11-03",
-  "generated_at_utc": "2026-11-05T02:59:24Z",
+  "generated_at_utc": "2026-11-05T06:59:25Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -62,7 +62,7 @@
   "rows": {
     "prices": 2784,
     "as_prices": 3552,
-    "load": 312
+    "load": 336
   },
   "status": {
     "CAISO": {
@@ -311,36 +311,37 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.7
+        "seconds": 6.2
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.3
+        "seconds": 4.6
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.3
+        "seconds": 5.1
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 243.0
+        "seconds": 298.2
       },
       "as_da_D": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.3
+        "seconds": 0.7
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.3
+        "seconds": 0.4
       },
       "load_forecast_D": {
-        "ok": false,
-        "error": "NoDataFoundException: No load forecast by BAA data found for 2026-11-05"
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
       },
       "load_actual_D-2": {
         "ok": true,
@@ -367,6 +368,12 @@
         "MISO",
         "NYISO",
         "ISONE",
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-05T06:59:25Z",
+      "isos": [
         "SPP"
       ]
     }
