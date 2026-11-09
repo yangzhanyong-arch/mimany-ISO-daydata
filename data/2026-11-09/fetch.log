@@ -74,3 +74,16 @@
 2026-11-09 02:09:20,125 INFO SPP done in 329s
 2026-11-09 02:09:20,172 INFO this run: datasets ok 53/54 | file rows {'prices': 2780, 'as_prices': 3552, 'load': 312}
 2026-11-09 02:09:20,172 INFO   SPP still failing: load_forecast_D
+2026-11-09 06:42:44,644 INFO report date D=2026-11-09 | DA days 2026-11-07,2026-11-08,2026-11-09 | RT day 2026-11-07 | ISOs SPP
+2026-11-09 06:42:48,249 INFO SPP    da_lmp_D               ok  rows=48    3.6s
+2026-11-09 06:42:51,669 INFO SPP    da_lmp_D-1             ok  rows=48    3.4s
+2026-11-09 06:42:54,758 INFO SPP    da_lmp_D-2             ok  rows=48    3.1s
+2026-11-09 06:42:55,123 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-09 06:46:21,677 INFO SPP    rt_lmp_D-2             ok  rows=48    206.9s
+2026-11-09 06:46:22,031 INFO SPP    as_da_D                ok  rows=168   0.4s
+2026-11-09 06:46:22,301 INFO SPP    as_da_D-1              ok  rows=168   0.3s
+2026-11-09 06:46:23,133 INFO SPP    load_forecast_D        ok  rows=24    0.8s
+2026-11-09 06:46:23,361 INFO SPP MTLF columns: ['Interval Start', 'Interval End', 'Publish Time', 'Forecast Type', 'MTLF', 'Averaged Actual', 'BAA']
+2026-11-09 06:46:23,365 INFO SPP    load_actual_D-2        ok  rows=24    0.2s
+2026-11-09 06:46:23,365 INFO SPP done in 219s
+2026-11-09 06:46:23,407 INFO this run: datasets ok 8/8 | file rows {'prices': 2780, 'as_prices': 3552, 'load': 336}
