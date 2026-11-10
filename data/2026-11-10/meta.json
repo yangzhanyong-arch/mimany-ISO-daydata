@@ -3,7 +3,7 @@
   "da_day": "2026-11-10",
   "da_prev_day": "2026-11-09",
   "rt_day": "2026-11-08",
-  "generated_at_utc": "2026-11-10T04:29:35Z",
+  "generated_at_utc": "2026-11-10T07:29:46Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -62,7 +62,7 @@
   "rows": {
     "prices": 2784,
     "as_prices": 3552,
-    "load": 312
+    "load": 336
   },
   "status": {
     "CAISO": {
@@ -311,22 +311,22 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.2
+        "seconds": 4.3
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.1
+        "seconds": 4.0
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.7
+        "seconds": 4.2
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 235.0
+        "seconds": 254.3
       },
       "as_da_D": {
         "ok": true,
@@ -336,16 +336,17 @@
       "as_da_D-1": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.4
+        "seconds": 0.3
       },
       "load_forecast_D": {
-        "ok": false,
-        "error": "NoDataFoundException: No load forecast by BAA data found for 2026-11-10"
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.4
+        "seconds": 0.5
       }
     }
   },
@@ -367,6 +368,12 @@
         "MISO",
         "NYISO",
         "ISONE",
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-10T07:29:46Z",
+      "isos": [
         "SPP"
       ]
     }
