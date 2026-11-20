@@ -17,6 +17,11 @@ on:
         description: "Comma-separated ISO subset, e.g. PJM,MISO (empty = all)"
         required: false
         default: ""
+      retry_failed:
+        description: "Only re-fetch ISOs with failed datasets in meta.json"
+        type: boolean
+        required: false
+        default: false
   push:
     branches: [main]
     paths:
@@ -47,18 +52,67 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Fetch ISO data
+        id: fetch
         env:
           PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
           MISO_API_PRICING_SUBSCRIPTION_KEY: ${{ secrets.MISO_API_PRICING_SUBSCRIPTION_KEY }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           IN_DATE: ${{ github.event.inputs.date }}
           IN_ISOS: ${{ github.event.inputs.isos }}
+          IN_RETRY: ${{ github.event.inputs.retry_failed }}
           SCHEDULE: ${{ github.event.schedule }}
         run: |
-          ARGS=()
-          if [ -n "$IN_DATE" ]; then ARGS+=(--date "$IN_DATE"); fi
+          TARGET_DATE="${IN_DATE:-$(TZ=Asia/Shanghai date +%F)}"
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+          ARGS=(--date "$TARGET_DATE")
           if [ -n "$IN_ISOS" ]; then ARGS+=(--isos "$IN_ISOS"); fi
-          if [ "$SCHEDULE" = "17 0 * * *" ]; then ARGS+=(--retry-failed); fi
+          if [ "$SCHEDULE" = "17 0 * * *" ] || [ "$IN_RETRY" = "true" ]; then
+            ARGS+=(--retry-failed)
+          fi
           python fetch/fetch_iso.py --out data "${ARGS[@]}"
+
+      - name: Write run summary
+        if: always() && steps.fetch.outputs.target_date != ''
+        env:
+          TARGET_DATE: ${{ steps.fetch.outputs.target_date }}
+        run: |
+          python - << 'EOF'
+          import json, os
+
+          d = os.environ["TARGET_DATE"]
+          meta_path = os.path.join("data", d, "meta.json")
+          summary_file = os.environ["GITHUB_STEP_SUMMARY"]
+
+          if not os.path.exists(meta_path):
+              with open(summary_file, "a", encoding="utf-8") as f:
+                  f.write(f"### US ISO Fetch ({d})\n\n`meta.json` not generated.\n")
+              raise SystemExit(0)
+
+          meta = json.load(open(meta_path, encoding="utf-8"))
+          rows = meta.get("rows", {})
+          lines = [
+              f"### US ISO Fetch Summary — `{d}` (RT Day: `{meta.get('rt_day')}`)",
+              "",
+              f"- **gridstatus**: `{meta.get('gridstatus_version')}`",
+              "- **CSV Rows**: " + ", ".join(f"`{k}`={v}" for k, v in rows.items()),
+              "",
+              "| ISO / Source | OK / Total | Failed Datasets |",
+              "| :--- | :---: | :--- |",
+          ]
+          any_bad = []
+          for iso, st in meta.get("status", {}).items():
+              ok_n = sum(1 for v in st.values() if v.get("ok"))
+              bad = [k for k, v in st.items() if not v.get("ok")]
+              if bad:
+                  any_bad.append(f"{iso}: {', '.join(bad)}")
+              lines.append(f"| **{iso}** | {ok_n}/{len(st)} | {', '.join(bad) if bad else '—'} |")
+
+          with open(summary_file, "a", encoding="utf-8") as f:
+              f.write("\n".join(lines) + "\n")
+
+          if any_bad:
+              print("::warning::Datasets still failing -> " + " | ".join(any_bad))
+          EOF
 
       - name: Prune old data (keep latest 60 days)
         run: |
