@@ -2,22 +2,13 @@
 """
 Daily fetch of US ISO/RTO wholesale market data for the "US ISO daily report".
 
-Runs on GitHub Actions (needs open internet access to the ISO websites).
-
-For a report date D (the Beijing calendar date the report is read on):
-  * Day-ahead (DA) LMP at key hubs for US operating days D-2, D-1 and D
-  * Real-time (RT) LMP at key hubs for operating day D-2 (the latest complete
-    US operating day when the report is produced), averaged to hourly
-  * Ancillary-service (AS) clearing prices: day-ahead for D-1 and D
-    (ISO-NE has no public day-ahead AS feed in gridstatus, so its real-time
-    reserve prices for D-2 are used instead)
-  * Load: latest load forecast for D, actual load for D-2 (hourly)
-
-Output: tidy CSVs with UTC timestamps plus local operating day and hour-ending:
-  data/<D>/prices.csv     iso,market,location,day,he,interval_start_utc,value
-  data/<D>/as_prices.csv  iso,market,product,zone,day,he,interval_start_utc,value
-  data/<D>/load.csv       iso,kind,day,he,interval_start_utc,value
-  data/<D>/meta.json      dates, time zones and the status of every dataset
+Outputs under data/<D>/:
+  prices.csv      iso,market,location,day,he,interval_start_utc,value
+  as_prices.csv   iso,market,product,zone,day,he,interval_start_utc,value
+  load.csv        iso,kind,day,he,interval_start_utc,value
+  fuel_mix.csv    iso,fuel,day,he,interval_start_utc,value
+  gas_prices.csv  source,hub,day,value,unit
+  meta.json       dates, time zones, notes, and dataset fetch status
 """
 from __future__ import annotations
 
@@ -52,7 +43,6 @@ for _noisy in ("gridstatus", "urllib3", "requests"):
 
 ISO_ORDER = ["CAISO", "ERCOT", "PJM", "MISO", "NYISO", "ISONE", "SPP"]
 
-# Pricing locations shown in the report (first one is the headline hub).
 HUBS = {
     "CAISO": ["TH_SP15_GEN-APND", "TH_NP15_GEN-APND", "TH_ZP26_GEN-APND"],
     "ERCOT": ["HB_NORTH", "HB_HOUSTON", "HB_SOUTH", "HB_WEST", "HB_HUBAVG"],
@@ -66,6 +56,12 @@ HUBS = {
 AS_ID_COLS = {
     "Time", "Interval Start", "Interval End", "Market", "Publish Time",
     "Region", "Zone", "Reserve Zone", "Location", "Location Type", "Locale",
+    "Delivery Date", "Delivery Hour", "Delivery Interval", "Hour Ending",
+    "DSTFlag", "RepeatedHourFlag", "SCED Timestamp", "Reserve Zone ID",
+}
+
+MIX_ID_COLS = {
+    "Time", "Interval Start", "Interval End", "Publish Time", "Total", "TOTAL",
 }
 
 
@@ -75,9 +71,12 @@ AS_ID_COLS = {
 @dataclass
 class Ctx:
     report_date: pd.Timestamp  # naive calendar date D
+    out_root: str = "data"
     prices: list = field(default_factory=list)
     as_prices: list = field(default_factory=list)
     load: list = field(default_factory=list)
+    fuel_mix: list = field(default_factory=list)
+    gas_prices: list = field(default_factory=list)
     status: dict = field(default_factory=dict)
     notes: dict = field(default_factory=dict)
 
@@ -123,10 +122,15 @@ def keep(bucket: list, df):
 
 
 def to_utc_hour(ts: pd.Series, tz: str) -> pd.Series:
-    ts = pd.to_datetime(ts)
-    if getattr(ts.dt, "tz", None) is None:
-        ts = ts.dt.tz_localize(tz, ambiguous="infer", nonexistent="shift_forward")
-    return ts.dt.tz_convert("UTC").dt.floor("h")
+    try:
+        s = pd.to_datetime(ts)
+        if not pd.api.types.is_datetime64_any_dtype(s):
+            s = pd.to_datetime(ts, utc=True)
+    except Exception:  # noqa: BLE001
+        s = pd.to_datetime(ts, utc=True)
+    if getattr(s.dt, "tz", None) is None:
+        s = s.dt.tz_localize(tz, ambiguous="infer", nonexistent="shift_forward")
+    return s.dt.tz_convert("UTC").dt.floor("h")
 
 
 def add_day_he(df: pd.DataFrame, tz: str) -> pd.DataFrame:
@@ -222,8 +226,9 @@ def tidy_load(df, iso, kind, tz, value_candidates, day=None, latest_publish=True
     value_col = pick_col(d, value_candidates)
     if "Interval Start" not in d.columns and "Time" in d.columns:
         d["Interval Start"] = d["Time"]
-    if latest_publish and "Publish Time" in d.columns:
-        d = d.sort_values("Publish Time").groupby("Interval Start", as_index=False).last()
+    pub_col = next((c for c in ("Publish Time", "Evaluated At", "Evaluated At UTC") if c in d.columns), None)
+    if latest_publish and pub_col:
+        d = d.sort_values(pub_col).groupby("Interval Start", as_index=False).last()
     d["interval_start_utc"] = to_utc_hour(d["Interval Start"], tz)
     d["value"] = pd.to_numeric(d[value_col], errors="coerce")
     g = d.groupby("interval_start_utc", as_index=False)["value"].mean()
@@ -233,6 +238,29 @@ def tidy_load(df, iso, kind, tz, value_candidates, day=None, latest_publish=True
     if day is not None:
         g = g[g["day"] == day]
     return g
+
+
+def tidy_fuel_mix(df, iso, tz, day):
+    d = df.copy()
+    if "Interval Start" not in d.columns and "Time" in d.columns:
+        d["Interval Start"] = d["Time"]
+    fuel_cols = []
+    for c in d.columns:
+        if c in MIX_ID_COLS or "flag" in c.lower():
+            continue
+        num = pd.to_numeric(d[c], errors="coerce")
+        if num.notna().mean() > 0.3:
+            d[c] = num
+            fuel_cols.append(c)
+    if not fuel_cols:
+        raise ValueError(f"no fuel columns in {list(df.columns)}")
+    d["interval_start_utc"] = to_utc_hour(d["Interval Start"], tz)
+    long = d.melt(id_vars=["interval_start_utc"], value_vars=fuel_cols, var_name="fuel", value_name="value")
+    long["value"] = pd.to_numeric(long["value"], errors="coerce")
+    g = long.groupby(["fuel", "interval_start_utc"], as_index=False)["value"].mean()
+    g.insert(0, "iso", iso)
+    g = add_day_he(g, tz)
+    return g[g["day"] == day]
 
 
 def only_day(df, day):
@@ -269,14 +297,34 @@ def fetch_caiso(ctx: Ctx):
         return out[out["day"].isin([d0, d1])]
     keep(ctx.as_prices, attempt(ctx, name, "as_da_D-1_D", as_da))
 
-    def lf():
-        df = iso.get_load_forecast_day_ahead(date=d0, end=ctx.day(1))
+    def lf(day, end_day):
+        df = iso.get_load_forecast_day_ahead(date=day, end=end_day)
         df = df[df["TAC Area Name"].astype(str).str.upper() == "CA ISO-TAC"]
-        return tidy_load(df, name, "forecast", tz, ["Load Forecast"], day=d0)
-    keep(ctx.load, attempt(ctx, name, "load_forecast_D", lf))
+        return tidy_load(df, name, "forecast", tz, ["Load Forecast"], day=day)
 
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: lf(d0, ctx.day(1))))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D-2", lambda: lf(d2, d1)))
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", lambda: tidy_load(
         iso.get_load(date=d2), name, "actual", tz, ["Load"], day=d2)))
+
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2, end=d1), name, tz, d2)))
+
+    def gas_d2():
+        df = iso.get_gas_prices(date=d2, end=d1)
+        pcol = pick_col(df, ["Price", "Gas Price", "PRC"])
+        rcol = pick_col(df, ["Fuel Region Id", "Fuel Region", "Region"], required=False)
+        df[pcol] = pd.to_numeric(df[pcol], errors="coerce")
+        rows = [{"source": "CAISO", "hub": "CAISO_ALL_MEDIAN", "day": d2,
+                 "value": round(float(df[pcol].median()), 3), "unit": "$/MMBtu"}]
+        if rcol:
+            for reg_prefix, label in (("PGE", "PG&E_Citygate_Proxy"), ("SCE", "SoCal_Proxy")):
+                sub = df[df[rcol].astype(str).str.upper().str.startswith(reg_prefix)]
+                if len(sub):
+                    rows.append({"source": "CAISO", "hub": label, "day": d2,
+                                 "value": round(float(sub[pcol].mean()), 3), "unit": "$/MMBtu"})
+        return pd.DataFrame(rows)
+    keep(ctx.gas_prices, attempt(ctx, name, "gas_D-2", gas_d2, tries=2))
 
 
 def fetch_ercot(ctx: Ctx):
@@ -297,16 +345,38 @@ def fetch_ercot(ctx: Ctx):
         keep(ctx.as_prices, attempt(ctx, name, f"as_da_{label}", lambda day=day: only_day(
             tidy_as_wide(iso.get_as_prices(date=day), name, "DA", tz), day)))
 
+    # ERCOT RTC+B real-time ancillary services (15-min MCPC averaged to hourly)
+    keep(ctx.as_prices, attempt(ctx, name, "as_rt_D-2", lambda: only_day(
+        tidy_as_wide(iso.get_mcpc_real_time_15_min(date=d2), name, "RT", tz), d2), tries=2))
+
     def lf():
         df = iso.get_load_forecast(date="latest")
         return tidy_load(df, name, "forecast", tz, ["System Total", "SystemTotal", "Total"], day=d0)
     keep(ctx.load, attempt(ctx, name, "load_forecast_D", lf))
+
+    # ERCOT web load forecast is ephemeral; inherit D-2 forecast from data/<D-2>/load.csv if present
+    def lf_d2_cached():
+        p = os.path.join(ctx.out_root, d2, "load.csv")
+        if os.path.exists(p):
+            old = pd.read_csv(p, dtype={"day": str})
+            sub = old[(old["iso"] == name) & (old["kind"] == "forecast") & (old["day"] == d2)].copy()
+            if len(sub):
+                sub["interval_start_utc"] = pd.to_datetime(sub["interval_start_utc"], utc=True)
+                return sub[["iso", "kind", "day", "he", "interval_start_utc", "value"]]
+        return pd.DataFrame()
+    cached_ercot_fc = lf_d2_cached()
+    if len(cached_ercot_fc):
+        keep(ctx.load, cached_ercot_fc)
+        ctx.status.setdefault(name, {})["load_forecast_D-2"] = {"ok": True, "rows": int(len(cached_ercot_fc)), "source": "cached_D-2"}
 
     def la():
         df = iso.get_load_by_weather_zone(date=d2)
         return tidy_load(df, name, "actual", tz, ["System Total", "Total", "Ercot", "ERCOT"],
                          day=d2, latest_publish=False)
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", la))
+
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2), name, tz, d2), tries=2))
 
 
 def get_pjm_key():
@@ -376,19 +446,23 @@ def fetch_pjm(ctx: Ctx):
             tidy_as_long(iso.get_dam_as_market_results(date=day), name, "DA", tz,
                          "Service Type", "Locale", "Market Clearing Price"), day)))
 
+    # Fix: PJM get_load_forecast("today") pivots areas into columns ("PJM RTO")
     keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: tidy_load(
-        iso.get_load_forecast(date="today"), name, "forecast", tz, ["Load Forecast"], day=d0)))
+        iso.get_load_forecast(date="today"), name, "forecast", tz, ["PJM RTO", "Load Forecast"], day=d0)))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D-2", lambda: tidy_load(
+        iso.get_load_forecast_historical(date=d2), name, "forecast", tz, ["PJM RTO", "Load Forecast"], day=d2)))
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", lambda: tidy_load(
-        iso.get_load(date=d2), name, "actual", tz, ["Load"], day=d2, latest_publish=False)))
+        iso.get_load(date=d2), name, "actual", tz, ["Load", "PJM RTO"], day=d2, latest_publish=False)))
+
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2, end=d1), name, tz, d2)))
 
 
 _RES_PAT = re.compile(r"reg|spin|supp|str|ramp|mcp|reserve", re.I)
 
 
 def _parse_miso_asm_csv(text: str, day: str, tz: str):
-    """Parse a MISO ASM MCP market report CSV (layout-agnostic). Returns long rows."""
     lines = [l for l in text.splitlines() if l.strip()]
-    log.info("MISO ASM raw head: %s", " || ".join(lines[:6])[:700])
     hdr_idx = None
     for i, l in enumerate(lines):
         cells = [c.strip().strip('"').upper() for c in l.split(",")]
@@ -402,24 +476,22 @@ def _parse_miso_asm_csv(text: str, day: str, tz: str):
     df.columns = [str(c).strip() for c in df.columns]
     he_cols = [c for c in df.columns if re.fullmatch(r"HE ?\d{1,2}", c.upper())]
     base = pd.Timestamp(day).tz_localize(tz)
-    if he_cols:  # wide by hour: identifier columns + HE1..HE24
+    if he_cols:
         id_cols = [c for c in df.columns if c not in he_cols]
         nun = {c: df[c].nunique() for c in id_cols}
 
-        def score(c):  # share of distinct values that look like a reserve product
+        def score(c):
             vals = df[c].dropna().astype(str).unique()
             return (sum(bool(_RES_PAT.search(v)) for v in vals) / max(len(vals), 1)) if 1 < len(vals) <= 30 else -1
         prod_col = max(id_cols, key=score) if id_cols and max(score(c) for c in id_cols) > 0 else None
         rest = [c for c in id_cols if c != prod_col]
         zone_col = next((c for c in rest if "ZONE" in c.upper()), None) or \
             (max(rest, key=lambda c: nun[c]) if rest else None)
-        log.info("MISO ASM columns: %s | product=%s zone/location=%s (%s distinct)", id_cols, prod_col,
-                 zone_col, nun.get(zone_col))
         long = df.melt(id_vars=id_cols, value_vars=he_cols, var_name="HE", value_name="value")
         long["he_n"] = long["HE"].str.extract(r"(\d+)")[0].astype(int)
         long["product"] = long[prod_col].astype(str) if prod_col else "MCP"
         long["zone"] = long[zone_col].astype(str) if zone_col else "System"
-    else:  # long by hour: hour column + product columns
+    else:
         he_col = next(c for c in df.columns if c.upper() in ("HOUR ENDING", "HOURENDING", "HE"))
         zone_col = next((c for c in df.columns if "ZONE" in c.upper()), None)
         value_cols = [c for c in df.columns if c not in (he_col, zone_col)]
@@ -433,13 +505,13 @@ def _parse_miso_asm_csv(text: str, day: str, tz: str):
     long = long[["Interval Start", "product", "zone", "value"]].dropna(subset=["value"])
     zone = long["zone"].astype(str).str.strip()
     wide = long[zone.str.upper().str.contains("MISO WIDE")]
-    if len(wide):  # system-wide MCP rows
+    if len(wide):
         long = wide.assign(zone="MISO Wide")
-    elif long["zone"].nunique() > 20:  # node-level file: zonal prices repeat on every node
+    elif long["zone"].nunique() > 20:
         long = long.groupby(["Interval Start", "product"], as_index=False)["value"].median()
         long["zone"] = "全网节点中位数"
     prod = long["product"].astype(str).str.upper().str.strip()
-    if prod.str.startswith("GEN").any():  # GEN/DEM/SER variants: keep the generator prices
+    if prod.str.startswith("GEN").any():
         long = long[prod.str.startswith("GEN")]
     long["product"] = long["product"].map(_miso_product_name)
     return long
@@ -488,8 +560,8 @@ def fetch_miso(ctx: Ctx):
     def dfal(day):
         return iso._get_load_forecast_file(pd.Timestamp(day).tz_localize(tz))
 
-    def lf():
-        for day in (d0, d1):
+    def lf_target(target_day, search_days):
+        for day in search_days:
             try:
                 df = dfal(day)
             except Exception as e:  # noqa: BLE001
@@ -498,12 +570,13 @@ def fetch_miso(ctx: Ctx):
             col = next((c for c in df.columns if "MISO" in c.upper() and "MTLF" in c.upper()), None)
             if col is None:
                 continue
-            out = tidy_load(df.dropna(subset=[col]), name, "forecast", tz, [col], day=d0,
+            out = tidy_load(df.dropna(subset=[col]), name, "forecast", tz, [col], day=target_day,
                             latest_publish=False)
             if len(out):
                 return out
         return None
-    keep(ctx.load, attempt(ctx, name, "load_forecast_D", lf))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: lf_target(d0, (d0, d1))))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D-2", lambda: lf_target(d2, (d2, d1))))
 
     def la():
         for day in (d0, d1, d2):
@@ -522,6 +595,9 @@ def fetch_miso(ctx: Ctx):
         return None
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", la))
 
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2), name, tz, d2), tries=2))
+
 
 def fetch_nyiso(ctx: Ctx):
     name, iso = "NYISO", gridstatus.NYISO()
@@ -530,12 +606,10 @@ def fetch_nyiso(ctx: Ctx):
 
     for label, day in (("D", d0), ("D-1", d1), ("D-2", d2)):
         keep(ctx.prices, attempt(ctx, name, f"da_lmp_{label}", lambda day=day: only_day(
-            tidy_prices(iso.get_lmp(date=day, market=Markets.DAY_AHEAD_HOURLY),
-                        name, "DA", tz, hubs), day)))
+            tidy_prices(iso.get_lmp_day_ahead_hourly(date=day), name, "DA", tz, hubs), day)))
 
     keep(ctx.prices, attempt(ctx, name, "rt_lmp_D-2", lambda: only_day(
-        tidy_prices(iso.get_lmp(date=d2, market=Markets.REAL_TIME_HOURLY),
-                    name, "RT", tz, hubs), d2)))
+        tidy_prices(iso.get_lmp_real_time_hourly(date=d2), name, "RT", tz, hubs), d2)))
 
     def as_day(day):
         df = iso.get_as_prices_day_ahead_hourly(date=day)
@@ -546,8 +620,13 @@ def fetch_nyiso(ctx: Ctx):
 
     keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: tidy_load(
         iso.get_load_forecast(date=d0), name, "forecast", tz, ["Load Forecast", "NYISO"], day=d0)))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D-2", lambda: tidy_load(
+        iso.get_load_forecast(date=d2), name, "forecast", tz, ["Load Forecast", "NYISO"], day=d2)))
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", lambda: tidy_load(
         iso.get_load(date=d2), name, "actual", tz, ["Load"], day=d2, latest_publish=False)))
+
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2), name, tz, d2)))
 
 
 def fetch_isone(ctx: Ctx):
@@ -562,7 +641,7 @@ def fetch_isone(ctx: Ctx):
     keep(ctx.prices, attempt(ctx, name, "rt_lmp_D-2", lambda: only_day(
         tidy_prices(iso.get_lmp_real_time_hourly(date=d2), name, "RT", tz, hubs), d2)))
 
-    def reserve_prices(kind):
+    def reserve_prices_fallback(kind):
         from gridstatus.isone import _make_request
         ds = pd.Timestamp(d2).strftime("%Y%m%d")
         url = f"https://www.iso-ne.com/transform/csv/fiveminreserveprice?type={kind}&start={ds}&end={ds}"
@@ -578,16 +657,24 @@ def fetch_isone(ctx: Ctx):
 
     def as_rt():
         df, errs = None, []
-        for kind in ("final", "prelim", "preliminary"):
-            try:
-                df = reserve_prices(kind)
-                if len(df):
-                    ctx.notes["ISONE_reserve_source"] = kind
-                    break
-            except Exception as e:  # noqa: BLE001
-                errs.append(f"{kind}: {e}")
-                df = None
-        if df is None:
+        try:
+            df = iso.get_reserve_zone_prices_designations_real_time_5_min_final(date=d2)
+            if len(df):
+                ctx.notes["ISONE_reserve_source"] = "final_public_api"
+        except Exception as e:  # noqa: BLE001
+            errs.append(f"public_final: {e}")
+            df = None
+        if df is None or df.empty:
+            for kind in ("final", "prelim", "preliminary"):
+                try:
+                    df = reserve_prices_fallback(kind)
+                    if len(df):
+                        ctx.notes["ISONE_reserve_source"] = kind
+                        break
+                except Exception as e:  # noqa: BLE001
+                    errs.append(f"{kind}: {e}")
+                    df = None
+        if df is None or df.empty:
             raise ValueError("; ".join(errs)[:400])
         zone_col = next((c for c in df.columns if "zone" in c.lower() and "name" in c.lower()), None) or \
             next((c for c in df.columns if "zone" in c.lower() and "id" not in c.lower()
@@ -601,8 +688,13 @@ def fetch_isone(ctx: Ctx):
 
     keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: tidy_load(
         iso.get_load_forecast(date=d0), name, "forecast", tz, ["Load Forecast"], day=d0)))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D-2", lambda: tidy_load(
+        iso.get_load_forecast(date=d2), name, "forecast", tz, ["Load Forecast"], day=d2)))
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", lambda: tidy_load(
         iso.get_load(date=d2), name, "actual", tz, ["Load"], day=d2, latest_publish=False)))
+
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2), name, tz, d2)))
 
 
 def fetch_spp(ctx: Ctx):
@@ -635,14 +727,15 @@ def fetch_spp(ctx: Ctx):
 
     keep(ctx.load, attempt(ctx, name, "load_forecast_D", lambda: tidy_load(
         iso.get_load_forecast(date=d0), name, "forecast", tz, ["Load Forecast"], day=d0)))
+    keep(ctx.load, attempt(ctx, name, "load_forecast_D-2", lambda: tidy_load(
+        iso.get_load_forecast(date=d2), name, "forecast", tz, ["Load Forecast"], day=d2)))
+
     def la():
         errors = []
-        # 1) mid-term forecast file published just after midnight of D-1 carries the past 24h actuals
         try:
             t = pd.Timestamp(d1).tz_localize(tz) + pd.Timedelta(minutes=20)
             df = iso.get_load_forecast_mid_term(date=t)
             col = next((c for c in df.columns if "actual" in c.lower()), None)
-            log.info("SPP MTLF columns: %s", list(df.columns))
             if col is not None:
                 df[col] = pd.to_numeric(df[col], errors="coerce")
                 g = df.dropna(subset=[col]).groupby("Interval Start", as_index=False)[col].sum(min_count=1)
@@ -653,10 +746,8 @@ def fetch_spp(ctx: Ctx):
                 errors.append(f"MTLF actual rows for {d2}: {len(out)}")
         except Exception as e:  # noqa: BLE001
             errors.append(f"MTLF: {e}")
-        # 2) daily hourly-load file (one-day delay), BA-level rows
         try:
             df = iso.get_hourly_load(date=d2)
-            log.info("SPP hourly load types: %s", df["Forecast Area Type"].astype(str).unique().tolist()[:10])
             ba = df[df["Forecast Area Type"].astype(str).str.upper().str.contains("BA")]
             use = ba if len(ba) else df
             g = use.groupby("Interval Start", as_index=False)["Load"].sum(min_count=1)
@@ -669,6 +760,44 @@ def fetch_spp(ctx: Ctx):
             errors.append(f"hourly load: {e}")
         raise ValueError("; ".join(errors)[:400])
     keep(ctx.load, attempt(ctx, name, "load_actual_D-2", la, tries=2))
+
+    keep(ctx.fuel_mix, attempt(ctx, name, "fuel_mix_D-2", lambda: tidy_fuel_mix(
+        iso.get_fuel_mix(date=d2), name, tz, d2)))
+
+
+def fetch_eia_gas(ctx: Ctx):
+    """Optional Henry Hub spot gas price if EIA_API_KEY env secret is configured."""
+    key = os.getenv("EIA_API_KEY", "").strip()
+    if not key:
+        return
+    d2 = ctx.day(-2)
+    start = (pd.Timestamp(d2) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
+
+    def pull():
+        url = "https://api.eia.gov/v2/natural-gas/pri/fut/data/"
+        params = {
+            "api_key": key,
+            "frequency": "daily",
+            "data[0]": "value",
+            "facets[series][]": "RNGWHHD",
+            "start": start,
+            "end": d2,
+            "sort[0][column]": "period",
+            "sort[0][direction]": "desc",
+            "length": 10,
+        }
+        r = requests.get(url, params=params, timeout=30)
+        r.raise_for_status()
+        data = r.json().get("response", {}).get("data", [])
+        rows = []
+        for row in data:
+            val = pd.to_numeric(row.get("value"), errors="coerce")
+            if pd.notna(val):
+                rows.append({"source": "EIA", "hub": "Henry_Hub_Spot",
+                             "day": str(row["period"])[:10], "value": round(float(val), 3),
+                             "unit": "$/MMBtu"})
+        return pd.DataFrame(rows[:5])
+    keep(ctx.gas_prices, attempt(ctx, "EIA", "henry_hub_gas", pull, tries=2))
 
 
 FETCHERS = {
@@ -684,7 +813,6 @@ def default_report_date() -> pd.Timestamp:
 
 
 def _merge_csv(path: str, new: pd.DataFrame, keys: list[str], cols: list[str]) -> pd.DataFrame:
-    """New rows replace old rows sharing the same keys; everything else is kept."""
     if os.path.exists(path) and os.path.getsize(path) > 0:
         try:
             old = pd.read_csv(path, dtype={"day": str})
@@ -702,17 +830,19 @@ def _merge_csv(path: str, new: pd.DataFrame, keys: list[str], cols: list[str]) -
 def write_outputs(ctx: Ctx, out_dir: str, isos):
     os.makedirs(out_dir, exist_ok=True)
 
-    def dump(frames, name, cols, keys):
+    def dump(frames, name, cols, keys, round_nd=3, has_utc=True):
         path = os.path.join(out_dir, name)
         if frames:
             df = pd.concat(frames, ignore_index=True)
-            df["interval_start_utc"] = df["interval_start_utc"].dt.strftime("%Y-%m-%dT%H:%MZ")
-            df["value"] = df["value"].round(3)
+            if has_utc and "interval_start_utc" in df.columns:
+                df["interval_start_utc"] = pd.to_datetime(df["interval_start_utc"], utc=True).dt.strftime("%Y-%m-%dT%H:%MZ")
+            df["value"] = pd.to_numeric(df["value"], errors="coerce").round(round_nd)
             df = df[cols]
         else:
             df = pd.DataFrame(columns=cols)
         df = _merge_csv(path, df, keys, cols)
-        df = df.sort_values(cols[:-2]).reset_index(drop=True)
+        sort_cols = [c for c in cols if c != "value"]
+        df = df.sort_values(sort_cols).reset_index(drop=True)
         df.to_csv(path, index=False)
         return len(df)
 
@@ -725,6 +855,12 @@ def write_outputs(ctx: Ctx, out_dir: str, isos):
     n_l = dump(ctx.load, "load.csv",
                ["iso", "kind", "day", "he", "interval_start_utc", "value"],
                ["iso", "kind", "day"])
+    n_f = dump(ctx.fuel_mix, "fuel_mix.csv",
+               ["iso", "fuel", "day", "he", "interval_start_utc", "value"],
+               ["iso", "day"])
+    n_g = dump(ctx.gas_prices, "gas_prices.csv",
+               ["source", "hub", "day", "value", "unit"],
+               ["source", "hub", "day"], has_utc=False)
 
     meta_path = os.path.join(out_dir, "meta.json")
     old_meta = {}
@@ -755,7 +891,7 @@ def write_outputs(ctx: Ctx, out_dir: str, isos):
         "gridstatus_version": gridstatus.__version__,
         "timezones": tzs,
         "hubs": HUBS,
-        "rows": {"prices": n_p, "as_prices": n_a, "load": n_l},
+        "rows": {"prices": n_p, "as_prices": n_a, "load": n_l, "fuel_mix": n_f, "gas_prices": n_g},
         "status": status,
         "notes": notes,
         "runs": runs,
@@ -770,9 +906,8 @@ def failed_isos(out_dir: str) -> list[str]:
     if not os.path.exists(meta_path):
         return list(ISO_ORDER)
     status = json.load(open(meta_path, encoding="utf-8")).get("status", {})
-    bad = [iso for iso in ISO_ORDER
-           if iso not in status or any(not v.get("ok") for v in status[iso].values())]
-    return bad
+    return [iso for iso in ISO_ORDER
+            if iso not in status or any(not v.get("ok") for v in status[iso].values())]
 
 
 def main():
@@ -785,7 +920,7 @@ def main():
     args = ap.parse_args()
 
     report_date = pd.Timestamp(args.date) if args.date else default_report_date()
-    ctx = Ctx(report_date=report_date)
+    ctx = Ctx(report_date=report_date, out_root=args.out)
     out_dir = os.path.join(args.out, ctx.day(0))
     os.makedirs(out_dir, exist_ok=True)
     fh = logging.FileHandler(os.path.join(out_dir, "fetch.log"), encoding="utf-8")
@@ -811,6 +946,7 @@ def main():
             traceback.print_exc()
         log.info("%s done in %.0fs", iso, time.time() - t0)
 
+    fetch_eia_gas(ctx)
     meta = write_outputs(ctx, out_dir, isos)
     ok = sum(v.get("ok", False) for s_ in ctx.status.values() for v in s_.values())
     total = sum(len(s_) for s_ in ctx.status.values())
