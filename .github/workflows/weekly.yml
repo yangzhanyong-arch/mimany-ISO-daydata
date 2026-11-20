@@ -1,0 +1,90 @@
+name: weekly-iso-report
+
+# Generates the US ISO weekly report every Monday afternoon Beijing Time:
+#   06:00 UTC Monday = 14:00 Beijing Time Monday
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Monday report date D (YYYY-MM-DD, Beijing). Empty = today in Beijing"
+        required: false
+        default: ""
+  push:
+    branches: [main]
+    paths:
+      - "report/weekly_report.py"
+      - ".github/workflows/weekly.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-iso-report
+  cancel-in-progress: false
+
+jobs:
+  weekly-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Chinese fonts (Ubuntu)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-wqy-microhei fontconfig
+          sudo fc-cache -fv
+          rm -rf ~/.cache/matplotlib
+
+      - name: Install Python dependencies
+        run: pip install pandas numpy matplotlib
+
+      - name: Generate weekly report & charts
+        id: build
+        env:
+          IN_DATE: ${{ github.event.inputs.date }}
+        run: |
+          TARGET_DATE="${IN_DATE:-$(TZ=Asia/Shanghai date +%F)}"
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+          python report/weekly_report.py --data data --date "$TARGET_DATE" --out "reports/weekly/$TARGET_DATE"
+
+      - name: Publish to GitHub Step Summary
+        if: always() && steps.build.outputs.target_date != ''
+        env:
+          TARGET_DATE: ${{ steps.build.outputs.target_date }}
+        run: |
+          MD="reports/weekly/$TARGET_DATE/weekly_report.md"
+          if [ -f "$MD" ]; then
+            cat "$MD" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload weekly report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-report-${{ steps.build.outputs.target_date }}
+          path: reports/weekly/${{ steps.build.outputs.target_date }}/
+          retention-days: 30
+
+      - name: Prune old weekly reports (keep latest 26 weeks)
+        run: |
+          ls -1d reports/weekly/20??-??-?? 2>/dev/null | sort | head -n -26 | xargs -r rm -rf
+
+      - name: Commit weekly report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reports/weekly
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "weekly-report: ${{ steps.build.outputs.target_date }} run ${GITHUB_RUN_NUMBER}"
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
