@@ -3,7 +3,7 @@
   "da_day": "2026-11-18",
   "da_prev_day": "2026-11-17",
   "rt_day": "2026-11-16",
-  "generated_at_utc": "2026-11-18T07:40:44Z",
+  "generated_at_utc": "2026-11-20T09:45:18Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -61,25 +61,27 @@
   },
   "rows": {
     "prices": 2784,
-    "as_prices": 3552,
-    "load": 336
+    "as_prices": 3576,
+    "load": 504,
+    "fuel_mix": 1248,
+    "gas_prices": 1
   },
   "status": {
     "CAISO": {
       "da_lmp_D": {
         "ok": true,
         "rows": 72,
-        "seconds": 6.2
+        "seconds": 5.8
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 72,
-        "seconds": 6.0
+        "seconds": 5.8
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 72,
-        "seconds": 5.5
+        "seconds": 5.6
       },
       "rt_lmp_D-2": {
         "ok": true,
@@ -89,81 +91,111 @@
       "as_da_D-1_D": {
         "ok": true,
         "rows": 192,
-        "seconds": 13.3
+        "seconds": 14.1
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 4.5
+        "seconds": 4.6
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.6
+        "seconds": 0.5
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 4.6
+      },
+      "fuel_mix_D-2": {
+        "ok": true,
+        "rows": 312,
+        "seconds": 0.3
+      },
+      "gas_D-2": {
+        "ok": true,
+        "rows": 1,
+        "seconds": 4.7
       }
     },
     "ERCOT": {
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 12.7
+        "seconds": 0.6
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 2.0
+        "seconds": 1.1
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.2
+        "seconds": 1.6
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 57.1
+        "seconds": 50.1
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.7
+        "seconds": 0.9
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.2
+        "seconds": 0.9
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.7
+        "seconds": 1.7,
+        "kept_from_earlier_run": true
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.0
+        "seconds": 0.7
+      },
+      "as_rt_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 40.3
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
+        "source": "cached_D-2"
+      },
+      "fuel_mix_D-2": {
+        "ok": false,
+        "error": "NotSupported: "
       }
     },
     "PJM": {
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 5.7
+        "seconds": 5.1
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 3.7
+        "seconds": 5.7
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 4.1
+        "seconds": 5.4
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 5.7
+        "seconds": 4.6
       },
       "as_da_D": {
         "ok": true,
@@ -173,16 +205,27 @@
       "as_da_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.7
+        "seconds": 0.6
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.6
+        "seconds": 1.6,
+        "kept_from_earlier_run": true
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
+        "seconds": 1.2
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.7
+      },
+      "fuel_mix_D-2": {
+        "ok": true,
+        "rows": 240,
         "seconds": 0.7
       }
     },
@@ -190,22 +233,22 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.5
+        "seconds": 0.4
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.3
+        "seconds": 0.5
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.3
+        "seconds": 0.4
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.3
+        "seconds": 0.6
       },
       "as_da_D": {
         "ok": true,
@@ -215,49 +258,58 @@
       "as_da_D-1": {
         "ok": true,
         "rows": 72,
-        "seconds": 0.6
+        "seconds": 0.4
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.4
+        "seconds": 0.1
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
+        "seconds": 0.1
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
         "seconds": 0.2
+      },
+      "fuel_mix_D-2": {
+        "ok": false,
+        "error": "NotSupported: Only 'latest', 'today', and yesterday's date are supported"
       }
     },
     "NYISO": {
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.2
+        "seconds": 0.9
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.3
+        "seconds": 0.7
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.2
+        "seconds": 0.9
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.1
+        "seconds": 0.8
       },
       "as_da_D": {
         "ok": true,
         "rows": 1056,
-        "seconds": 0.1
+        "seconds": 0.2
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 1056,
-        "seconds": 0.2
+        "seconds": 0.1
       },
       "load_forecast_D": {
         "ok": true,
@@ -267,19 +319,29 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
+        "seconds": 0.2
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
         "seconds": 0.1
+      },
+      "fuel_mix_D-2": {
+        "ok": true,
+        "rows": 168,
+        "seconds": 0.3
       }
     },
     "ISONE": {
       "da_lmp_D": {
         "ok": true,
         "rows": 96,
-        "seconds": 0.8
+        "seconds": 1.3
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 96,
-        "seconds": 0.8
+        "seconds": 0.9
       },
       "da_lmp_D-2": {
         "ok": true,
@@ -289,7 +351,7 @@
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 96,
-        "seconds": 1.5
+        "seconds": 1.7
       },
       "as_rt_D-2": {
         "ok": true,
@@ -304,49 +366,69 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.4
+        "seconds": 0.9
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.2
+      },
+      "fuel_mix_D-2": {
+        "ok": true,
+        "rows": 264,
+        "seconds": 0.5
       }
     },
     "SPP": {
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.0
+        "seconds": 3.1
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.7
+        "seconds": 3.1
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.9
+        "seconds": 3.0
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 281.1
+        "seconds": 197.6
       },
       "as_da_D": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.7
+        "seconds": 0.3
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.5
+        "seconds": 0.3
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.8
+        "seconds": 0.3
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.0
+        "seconds": 0.3
+      },
+      "load_forecast_D-2": {
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
+      },
+      "fuel_mix_D-2": {
+        "ok": true,
+        "rows": 264,
+        "seconds": 19.8
       }
     }
   },
@@ -354,7 +436,7 @@
     "CAISO_as_region": "AS_CAISO_EXP",
     "PJM_key_source": "public",
     "PJM_rt_source": "verified",
-    "ISONE_reserve_source": "final",
+    "ISONE_reserve_source": "final_public_api",
     "SPP_rt_source": "5-minute interval files",
     "SPP_load_actual_source": "MTLF averaged actual"
   },
@@ -374,6 +456,18 @@
     {
       "at_utc": "2026-11-18T07:40:44Z",
       "isos": [
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-20T09:45:18Z",
+      "isos": [
+        "CAISO",
+        "ERCOT",
+        "PJM",
+        "MISO",
+        "NYISO",
+        "ISONE",
         "SPP"
       ]
     }
