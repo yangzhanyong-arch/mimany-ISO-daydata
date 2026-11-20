@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 """
 Build summary statistics and charts for the US ISO daily report.
-
-Reads the tidy CSVs written by fetch/fetch_iso.py (data/<D>/ plus the two
-previous folders as fallback for DA history) and writes into --out:
-  summary.json       all numbers the report and the commentary need
-  charts/*.png       overview + per-ISO price / load / AS charts
-
-Usage:
-  python3 report/analyze.py --data data --date 2026-11-03 --out work
+Backward-compatible with existing summary.json consumers while adding:
+  * D-2 load forecast error (Actual - Forecast)
+  * Fuel mix breakdown, renewable share, net load & 3h ramp + charts/<ISO>_mix.png
+  * ERCOT/multi-market RT AS comparison (as_rt)
+  * Gas benchmarks & implied heat rate
 """
 from __future__ import annotations
 
@@ -40,7 +37,6 @@ ISO_INFO = {
 TZ = {"CAISO": "US/Pacific", "ERCOT": "US/Central", "PJM": "US/Eastern", "MISO": "EST",
       "NYISO": "US/Eastern", "ISONE": "US/Eastern", "SPP": "US/Central"}
 
-# Hubs in display order; the first one is the headline hub of the ISO.
 HUBS = {
     "CAISO": ["TH_SP15_GEN-APND", "TH_NP15_GEN-APND", "TH_ZP26_GEN-APND"],
     "ERCOT": ["HB_NORTH", "HB_HOUSTON", "HB_SOUTH", "HB_WEST", "HB_HUBAVG"],
@@ -65,9 +61,8 @@ HUB_LABELS = {
     "SPPNORTH_HUB": "North Hub", "SPPSOUTH_HUB": "South Hub",
 }
 
-# (regex on normalized product name, Chinese label, sort order); first match wins
 AS_LABELS = [
-    (r"mileage", None, 99),  # dropped
+    (r"mileage", None, 99),
     (r"10 ?min.*non|tmnsr|non ?spin|non ?synchron|nspin|^nr$", "非旋转备用", 7),
     (r"reg(ulation)? ?up|regup|^ru$", "上调频", 1),
     (r"reg(ulation)? ?(dn|down)|regdn|regdown|^rd$", "下调频", 2),
@@ -86,6 +81,22 @@ AS_LABELS = [
     (r"unc", "不确定性备用", 14),
 ]
 
+FUEL_GROUPS = [
+    (r"solar|photovoltaic", "光伏"),
+    (r"wind", "风电"),
+    (r"nuclear", "核电"),
+    (r"natural gas|gas\b|dual fuel", "天然气"),
+    (r"coal|lignite", "燃煤"),
+    (r"hydro", "水电"),
+    (r"batter|storage", "储能"),
+    (r"import", "净进口"),
+]
+FUEL_COLORS = {
+    "核电": "#7a68c9", "燃煤": "#6e6b65", "天然气": "#eda100",
+    "水电": "#2a78d6", "风电": "#1baf7a", "光伏": "#f2c94c",
+    "储能": "#e87ba4", "净进口": "#999999", "其他": "#c9c8c2",
+}
+
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
 REF_GRAY = "#8c8b85"
 INK, INK2, MUTED, GRID = "#1b1b1a", "#52514e", "#8a8984", "#e6e5e0"
@@ -100,6 +111,14 @@ def as_label(product: str):
         if re.search(pat, n, re.I):
             return label, order
     return p, 50
+
+
+def fuel_group(fuel: str) -> str:
+    f = str(fuel).strip().lower()
+    for pat, label in FUEL_GROUPS:
+        if re.search(pat, f, re.I):
+            return label
+    return "其他"
 
 
 def setup_fonts():
@@ -141,22 +160,23 @@ def setup_fonts():
 # --------------------------------------------------------------------------
 # data loading
 # --------------------------------------------------------------------------
-def load_tidy(data_root: str, date: str, name: str, keys: list[str]) -> pd.DataFrame:
-    """Concatenate data/<D>, data/<D-1>, data/<D-2> files; newest folder wins."""
+def load_tidy(data_root: str, date: str, name: str, keys: list[str], has_he=True) -> pd.DataFrame:
     frames = []
     for back in range(0, 3):
         d = (pd.Timestamp(date) - timedelta(days=int(back))).strftime("%Y-%m-%d")
         path = os.path.join(data_root, d, name)
         if os.path.exists(path) and os.path.getsize(path) > 0:
-            df = pd.read_csv(path)
+            df = pd.read_csv(path, dtype={"day": str})
             if len(df):
                 df["_age"] = back
                 frames.append(df)
     if not frames:
-        return pd.DataFrame(columns=keys + ["value", "day", "he"])
+        cols = keys + ["value", "day"] + (["he"] if has_he else [])
+        return pd.DataFrame(columns=cols)
     df = pd.concat(frames, ignore_index=True).sort_values("_age")
     df = df.drop_duplicates(subset=keys, keep="first").drop(columns="_age")
-    df["he"] = df["he"].astype(int)
+    if has_he and "he" in df.columns:
+        df["he"] = df["he"].astype(int)
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     return df
 
@@ -173,7 +193,6 @@ def r(x, nd=2):
 
 
 def series_stats(s: pd.Series) -> dict | None:
-    """s indexed by hour-ending -> stats."""
     s = s.dropna()
     if s.empty:
         return None
@@ -201,8 +220,7 @@ def pct(a, b):
 # charts
 # --------------------------------------------------------------------------
 def _empty(ax, msg="数据暂缺"):
-    ax.text(0.5, 0.5, msg, ha="center", va="center", color=MUTED, fontsize=9,
-            transform=ax.transAxes)
+    ax.text(0.5, 0.5, msg, ha="center", va="center", color=MUTED, fontsize=9, transform=ax.transAxes)
     ax.set_xticks([])
     ax.set_yticks([])
     ax.grid(False)
@@ -228,9 +246,7 @@ def _finish(fig, path):
 def chart_prices(iso, pr, d0, d2, path):
     hubs = HUBS[iso]
     fig, axes = plt.subplots(1, 2, figsize=(6.6, 2.2), layout="constrained")
-    plotted = False
-    ymin = None
-    handles = {}
+    plotted, ymin, handles = False, None, {}
     for ax, (market, day, title) in zip(axes, (("DA", d0, f"日前出清价格（{d0}）"),
                                                 ("RT", d2, f"实时出清价格（{d2}，小时均值）"))):
         sub = pr[(pr.iso == iso) & (pr.market == market) & (pr.day == day)]
@@ -259,11 +275,9 @@ def chart_prices(iso, pr, d0, d2, path):
         ax.set_ylabel("$/MWh")
         _zero_line(ax, ymin)
     if plotted:
-        # hubs first (fixed order), reference last
         order = [HUB_LABELS.get(h, h) for h in hubs if HUB_LABELS.get(h, h) in handles]
         order += [k for k in handles if k not in order]
-        fig.legend([handles[k] for k in order], order, loc="outside lower center",
-                   ncol=min(len(order), 6))
+        fig.legend([handles[k] for k in order], order, loc="outside lower center", ncol=min(len(order), 6))
     _finish(fig, path)
 
 
@@ -271,6 +285,7 @@ def chart_load(iso, ld, d0, d2, path):
     fig, ax = plt.subplots(figsize=(3.25, 1.95), layout="constrained")
     ax.set_title("系统负荷（MW）", loc="left")
     fc = ld[(ld.iso == iso) & (ld.kind == "forecast") & (ld.day == d0)].sort_values("he")
+    fc2 = ld[(ld.iso == iso) & (ld.kind == "forecast") & (ld.day == d2)].sort_values("he")
     ac = ld[(ld.iso == iso) & (ld.kind == "actual") & (ld.day == d2)].sort_values("he")
     if fc.empty and ac.empty:
         _empty(ax)
@@ -280,13 +295,16 @@ def chart_load(iso, ld, d0, d2, path):
     if not ac.empty:
         hs.append(ax.plot(ac.he, ac.value, color=REF_GRAY, linewidth=1.3)[0])
         labels.append(f"{d2} 实际")
+    if not fc2.empty:
+        hs.append(ax.plot(fc2.he, fc2.value, color=REF_GRAY, linewidth=1.0, linestyle="--")[0])
+        labels.append(f"{d2} 原预测")
     if not fc.empty:
         hs.append(ax.plot(fc.he, fc.value, color=PALETTE[0], linewidth=1.6)[0])
         labels.append(f"{d0} 预测")
     n = int(max(fc.he.max() if len(fc) else 24, ac.he.max() if len(ac) else 24))
     _hour_axis(ax, n)
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k"))
-    ax.legend(hs, labels, loc="best", ncol=1)
+    ax.legend(hs, labels, loc="best", ncol=1, fontsize=6.6)
     _finish(fig, path)
 
 
@@ -312,6 +330,31 @@ def chart_as(iso, as_sel, title, path):
     _finish(fig, path)
 
 
+def chart_mix(iso, fm_sub, net_load_s, d2, path):
+    fig, ax = plt.subplots(figsize=(6.6, 2.05), layout="constrained")
+    ax.set_title(f"电源结构与净负荷（{d2}，MW）", loc="left")
+    if fm_sub.empty:
+        _empty(ax)
+        _finish(fig, path)
+        return
+    piv = fm_sub.pivot_table(index="he", columns="group", values="value", aggfunc="sum").fillna(0)
+    cols = [c for c in ["核电", "燃煤", "水电", "天然气", "风电", "光伏", "储能", "净进口", "其他"] if c in piv.columns]
+    pos_cols = [c for c in cols if (piv[c] >= 0).all() and piv[c].sum() > 0]
+    if pos_cols:
+        ax.stackplot(piv.index, [piv[c].values for c in pos_cols], labels=pos_cols,
+                     colors=[FUEL_COLORS.get(c, "#ccc") for c in pos_cols], alpha=0.82, zorder=2)
+    for c in cols:
+        if c not in pos_cols and piv[c].abs().sum() > 0:
+            ax.plot(piv.index, piv[c], label=c, color=FUEL_COLORS.get(c, "#999"), linewidth=1.2, zorder=3)
+    if net_load_s is not None and not net_load_s.empty:
+        s = net_load_s.sort_index()
+        ax.plot(s.index, s.values, label="净负荷(负荷-风光)", color=INK, linewidth=1.8, linestyle="--", zorder=4)
+    _hour_axis(ax, int(piv.index.max()))
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k"))
+    fig.legend(loc="outside lower center", ncol=min(len(cols) + 1, 6), fontsize=6.8)
+    _finish(fig, path)
+
+
 def chart_overview_bar(rows, d0, d1, path):
     rows = [x for x in rows if x.get("da_avg") is not None]
     fig, ax = plt.subplots(figsize=(6.6, 2.5), layout="constrained")
@@ -324,8 +367,7 @@ def chart_overview_bar(rows, d0, d1, path):
     w = 0.36
     prev = [x_.get("da_prev_avg") for x_ in rows]
     cur = [x_["da_avg"] for x_ in rows]
-    b1 = ax.bar(x - w / 2 - 0.01, [p if p is not None else 0 for p in prev], w,
-                color="#c9c8c2", label=f"{d1}")
+    b1 = ax.bar(x - w / 2 - 0.01, [p if p is not None else 0 for p in prev], w, color="#c9c8c2", label=f"{d1}")
     b2 = ax.bar(x + w / 2 + 0.01, cur, w, color=PALETTE[0], label=f"{d0}")
     for rect, v in zip(b2, cur):
         ax.text(rect.get_x() + rect.get_width() / 2, rect.get_height(), f"{v:.1f}",
@@ -342,8 +384,7 @@ def chart_overview_bar(rows, d0, d1, path):
 def chart_overview_profiles(pr, d0, path):
     fig, ax = plt.subplots(figsize=(6.6, 2.35), layout="constrained")
     ax.set_title(f"各ISO主枢纽日前逐时价格（{d0}，各自当地时间，$/MWh）", loc="left")
-    hs, labels = [], []
-    ymin = None
+    hs, labels, ymin = [], [], None
     for i, iso in enumerate(ISO_ORDER):
         hub = HUBS[iso][0]
         s = pr[(pr.iso == iso) & (pr.market == "DA") & (pr.day == d0) & (pr.location == hub)].sort_values("he")
@@ -376,6 +417,31 @@ def pick_as_zone(iso, sub):
     return zones[0]
 
 
+def summarize_as(iso, asp, target_market, target_day, prev_day=None):
+    sub = asp[(asp.iso == iso) & (asp.market == target_market)]
+    if sub.empty:
+        return None, pd.DataFrame()
+    if iso == "MISO" and sub.zone.nunique() > 1:
+        sub = sub.groupby(["product", "label", "order", "day", "he"], as_index=False)["value"].mean()
+        sub["zone"] = "各备用区平均"
+    zone = pick_as_zone(iso, sub)
+    sub = sub[sub.zone == zone]
+    cur = sub[sub.day == target_day]
+    if cur.empty:
+        return None, pd.DataFrame()
+    prev = sub[sub.day == prev_day] if prev_day else sub.iloc[0:0]
+    prods = []
+    for lab in cur.groupby("label")["order"].min().sort_values().index:
+        c = cur[cur.label == lab].groupby("he")["value"].mean()
+        p = prev[prev.label == lab].groupby("he")["value"].mean() if len(prev) else pd.Series(dtype=float)
+        cs, ps = series_stats(c), series_stats(p)
+        prods.append({"label": lab, "avg": cs["avg"] if cs else None,
+                      "max": cs["max"] if cs else None, "max_he": cs["max_he"] if cs else None,
+                      "prev_avg": ps["avg"] if ps else None,
+                      "chg": r(cs["avg"] - ps["avg"]) if cs and ps else None})
+    return {"market": target_market, "day": target_day, "zone": zone, "products": prods}, cur
+
+
 def build(args):
     D = pd.Timestamp(args.date)
     d0, d1, d2 = (D.strftime("%Y-%m-%d"), (D - timedelta(days=1)).strftime("%Y-%m-%d"),
@@ -387,7 +453,9 @@ def build(args):
     pr = load_tidy(args.data, d0, "prices.csv", ["iso", "market", "location", "interval_start_utc"])
     asp = load_tidy(args.data, d0, "as_prices.csv", ["iso", "market", "product", "zone", "interval_start_utc"])
     ld = load_tidy(args.data, d0, "load.csv", ["iso", "kind", "interval_start_utc"])
-    # Only today's folder may hold load data for D / D-2 with the right vintage
+    fm = load_tidy(args.data, d0, "fuel_mix.csv", ["iso", "fuel", "interval_start_utc"])
+    gas = load_tidy(args.data, d0, "gas_prices.csv", ["source", "hub", "day"], has_he=False)
+
     meta_path = os.path.join(args.data, d0, "meta.json")
     meta = json.load(open(meta_path, encoding="utf-8")) if os.path.exists(meta_path) else {}
 
@@ -396,12 +464,24 @@ def build(args):
         asp["label"] = [x[0] for x in lab]
         asp["order"] = [x[1] for x in lab]
         asp = asp[asp["label"].notna()]
+    if len(fm):
+        fm["group"] = fm["fuel"].map(fuel_group)
+
+    gas_rows = []
+    if len(gas):
+        for _, row in gas.sort_values(["day", "source", "hub"], ascending=[False, True, True]).iterrows():
+            gas_rows.append({"source": row["source"], "hub": row["hub"], "day": row["day"],
+                             "value": r(row["value"], 3), "unit": row.get("unit", "$/MMBtu")})
+
+    hh_gas = next((g["value"] for g in gas_rows if g["hub"] == "Henry_Hub_Spot" and g["day"] == d2), None)
+    caiso_gas = next((g["value"] for g in gas_rows if g["hub"] == "CAISO_ALL_MEDIAN" and g["day"] == d2), None)
 
     summary = {
         "report_date": d0, "da_day": d0, "da_prev_day": d1, "rt_day": d2,
         "generated_at_bj": (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M"),
         "data_fetched_at_utc": meta.get("generated_at_utc"),
         "chart_font": family,
+        "gas_benchmarks": gas_rows,
         "isos": {}, "overview": [], "data_issues": [],
     }
 
@@ -422,8 +502,7 @@ def build(args):
             s0, s1, s2, srt = series_stats(da0), series_stats(da1), series_stats(da2), series_stats(rt2)
             if not any([s0, s1, s2, srt]):
                 continue
-            row = {"id": hub, "label": HUB_LABELS.get(hub, hub), "da": s0, "da_prev": s1,
-                   "da_d2": s2, "rt": srt}
+            row = {"id": hub, "label": HUB_LABELS.get(hub, hub), "da": s0, "da_prev": s1, "da_d2": s2, "rt": srt}
             row["da_chg"] = r(s0["avg"] - s1["avg"]) if s0 and s1 else None
             row["da_chg_pct"] = pct(s0["avg"], s1["avg"]) if s0 and s1 else None
             row["da_minus_rt"] = r(s2["avg"] - srt["avg"]) if s2 and srt else None
@@ -433,51 +512,76 @@ def build(args):
                     diff = both["rt"] - both["da"]
                     row["rt_minus_da_max"] = r(diff.max())
                     row["rt_minus_da_max_he"] = int(diff.idxmax())
+            gas_ref = caiso_gas if iso == "CAISO" and caiso_gas else hh_gas
+            if gas_ref and gas_ref > 0 and srt and srt["avg"] is not None:
+                row["rt_implied_heat_rate"] = r(srt["avg"] / gas_ref, 2)
             hub_rows.append(row)
 
-        # ancillary services
-        as_block = None
-        sub = asp[asp.iso == iso] if len(asp) else asp
-        if len(sub):
-            market = "DA" if (sub.market == "DA").any() else "RT"
-            sub = sub[sub.market == market]
-            as_day = d0 if market == "DA" else d2
-            if iso in ("MISO",) and sub.zone.nunique() > 1:
-                sub = sub.groupby(["product", "label", "order", "day", "he"], as_index=False)["value"].mean()
-                sub["zone"] = "各备用区平均"
-            zone = pick_as_zone(iso, sub)
-            sub = sub[sub.zone == zone]
-            cur = sub[sub.day == as_day]
-            prev = sub[sub.day == d1] if market == "DA" else sub.iloc[0:0]
-            prods = []
-            for lab in cur.groupby("label")["order"].min().sort_values().index:
-                c = cur[cur.label == lab].groupby("he")["value"].mean()
-                p = prev[prev.label == lab].groupby("he")["value"].mean() if len(prev) else pd.Series(dtype=float)
-                cs, ps = series_stats(c), series_stats(p)
-                prods.append({"label": lab, "avg": cs["avg"] if cs else None,
-                              "max": cs["max"] if cs else None, "max_he": cs["max_he"] if cs else None,
-                              "prev_avg": ps["avg"] if ps else None,
-                              "chg": r(cs["avg"] - ps["avg"]) if cs and ps else None})
-            as_block = {"market": market, "day": as_day, "zone": zone, "products": prods}
-            chart_title = ("日前辅助服务出清价" if market == "DA" else "实时备用出清价（小时均值）")
-            chart_title += f"（{as_day}）"
-            chart_as(iso, cur, chart_title, os.path.join(out, "charts", f"{iso}_as.png"))
+        # ancillary services (DA primary, plus RT when available)
+        as_block, cur_as = summarize_as(iso, asp, "DA", d0, d1)
+        as_rt_block, cur_as_rt = summarize_as(iso, asp, "RT", d2)
+        if as_block is None and as_rt_block is not None:
+            as_block, cur_as = as_rt_block, cur_as_rt
+            as_rt_block = None
+        if as_block is not None:
+            chart_title = ("日前辅助服务出清价" if as_block["market"] == "DA" else "实时备用出清价（小时均值）")
+            chart_title += f"（{as_block['day']}）"
+            chart_as(iso, cur_as, chart_title, os.path.join(out, "charts", f"{iso}_as.png"))
         else:
             chart_as(iso, None, "辅助服务出清价", os.path.join(out, "charts", f"{iso}_as.png"))
 
-        # load
+        # load + D-2 forecast error
         fc = ld[(ld.iso == iso) & (ld.kind == "forecast") & (ld.day == d0)].set_index("he")["value"] if len(ld) else pd.Series(dtype=float)
+        fc2 = ld[(ld.iso == iso) & (ld.kind == "forecast") & (ld.day == d2)].set_index("he")["value"] if len(ld) else pd.Series(dtype=float)
         ac = ld[(ld.iso == iso) & (ld.kind == "actual") & (ld.day == d2)].set_index("he")["value"] if len(ld) else pd.Series(dtype=float)
-        fs, as_ = series_stats(fc), series_stats(ac)
+        fs, fs2, as_ = series_stats(fc), series_stats(fc2), series_stats(ac)
         load_block = {
             "forecast": {"day": d0, "peak": r(fs["max"], 0), "peak_he": fs["max_he"], "avg": r(fs["avg"], 0),
                          "min": r(fs["min"], 0), "min_he": fs["min_he"]} if fs else None,
             "actual": {"day": d2, "peak": r(as_["max"], 0), "peak_he": as_["max_he"], "avg": r(as_["avg"], 0),
                        "min": r(as_["min"], 0), "min_he": as_["min_he"]} if as_ else None,
+            "d2_forecast": {"day": d2, "peak": r(fs2["max"], 0), "avg": r(fs2["avg"], 0)} if fs2 else None,
+            "d2_forecast_error": None,
         }
         if fs and as_:
             load_block["peak_chg_pct"] = pct(fs["max"], as_["max"])
+        if not fc2.empty and not ac.empty:
+            both_ld = pd.concat([ac, fc2], axis=1, keys=["act", "fc"]).dropna()
+            if len(both_ld):
+                err = both_ld["act"] - both_ld["fc"]
+                abs_max_he = int(err.abs().idxmax())
+                load_block["d2_forecast_error"] = {
+                    "avg_mw": r(err.mean(), 0),
+                    "avg_pct": r((err.mean() / both_ld["fc"].mean()) * 100, 1) if both_ld["fc"].mean() else None,
+                    "max_abs_mw": r(err.loc[abs_max_he], 0),
+                    "max_abs_he": abs_max_he,
+                }
 
+        # fuel mix & net load
+        fm_sub = fm[(fm.iso == iso) & (fm.day == d2)] if len(fm) else pd.DataFrame()
+        mix_block, net_load_s = None, pd.Series(dtype=float)
+        if not fm_sub.empty:
+            by_grp = fm_sub.groupby("group")["value"].mean()
+            total_gen = by_grp[by_grp > 0].sum()
+            wind_s = fm_sub[fm_sub.group == "风电"].groupby("he")["value"].sum()
+            solar_s = fm_sub[fm_sub.group == "光伏"].groupby("he")["value"].sum()
+            ren_s = wind_s.add(solar_s, fill_value=0)
+            if not ac.empty:
+                net_load_s = ac.sub(ren_s, fill_value=0).dropna()
+            ramp_3h = net_load_s.diff(3) if len(net_load_s) >= 4 else pd.Series(dtype=float)
+            mix_block = {
+                "day": d2,
+                "avg_mw_by_group": {k: r(v, 0) for k, v in by_grp.sort_values(ascending=False).items()},
+                "renewable_share_pct": r((by_grp.get("风电", 0) + by_grp.get("光伏", 0)) / total_gen * 100, 1) if total_gen > 0 else None,
+                "wind_solar_avg_mw": r(by_grp.get("风电", 0) + by_grp.get("光伏", 0), 0),
+                "net_load_peak": r(net_load_s.max(), 0) if len(net_load_s) else None,
+                "net_load_peak_he": int(net_load_s.idxmax()) if len(net_load_s) else None,
+                "net_load_min": r(net_load_s.min(), 0) if len(net_load_s) else None,
+                "net_load_min_he": int(net_load_s.idxmin()) if len(net_load_s) else None,
+                "max_3h_ramp_mw": r(ramp_3h.max(), 0) if len(ramp_3h.dropna()) else None,
+                "max_3h_ramp_he": int(ramp_3h.idxmax()) if len(ramp_3h.dropna()) else None,
+            }
+        chart_mix(iso, fm_sub, net_load_s, d2, os.path.join(out, "charts", f"{iso}_mix.png"))
         chart_prices(iso, pr, d0, d2, os.path.join(out, "charts", f"{iso}_price.png"))
         chart_load(iso, ld, d0, d2, os.path.join(out, "charts", f"{iso}_load.png"))
 
@@ -493,15 +597,21 @@ def build(args):
             if h["da_chg"] is not None and (abs(h["da_chg"]) >= 10 or (
                     prev_avg is not None and abs(prev_avg) >= 10 and abs(h["da_chg_pct"] or 0) >= 20)):
                 flags.append(f"{h['label']} 日前均价 {h['da']['avg']}，较前日 {h['da_chg']:+} $/MWh")
-            if h.get("da_minus_rt") is not None and h["da"] and abs(h["da_minus_rt"]) >= 10:
+            # Fixed: check h["da_d2"] instead of h["da"]
+            if h.get("da_minus_rt") is not None and h.get("da_d2") and abs(h["da_minus_rt"]) >= 10:
                 flags.append(f"{h['label']} {d2} 日前-实时均价差 {h['da_minus_rt']} $/MWh")
+
+        err_info = load_block.get("d2_forecast_error")
+        if err_info and ((err_info["avg_pct"] is not None and abs(err_info["avg_pct"]) >= 4)
+                         or (err_info["max_abs_mw"] is not None and abs(err_info["max_abs_mw"]) >= 2500)):
+            flags.append(f"{d2} 负荷预测偏差：日均 {err_info['avg_mw']:+} MW ({err_info['avg_pct']:+}%)，最大偏差 {err_info['max_abs_mw']:+} MW (HE{err_info['max_abs_he']})")
 
         summary["isos"][iso] = {
             "label": info["label"], "name_cn": info["cn"], "tz": TZ[iso], "tz_cn": info["tz_cn"],
             "main_hub": HUB_LABELS.get(hubs[0], hubs[0]),
-            "hubs": hub_rows, "as": as_block, "load": load_block, "flags": flags,
-            "failed_datasets": failed,
-            "charts": {k: f"charts/{iso}_{k}.png" for k in ("price", "load", "as")},
+            "hubs": hub_rows, "as": as_block, "as_rt": as_rt_block, "load": load_block,
+            "fuel_mix": mix_block, "flags": flags, "failed_datasets": failed,
+            "charts": {k: f"charts/{iso}_{k}.png" for k in ("price", "load", "as", "mix")},
         }
         summary["overview"].append({
             "iso": iso, "label": info["label"], "main_hub": HUB_LABELS.get(hubs[0], hubs[0]),
@@ -516,6 +626,9 @@ def build(args):
             "da_minus_rt": main["da_minus_rt"] if main else None,
             "load_fc_peak": load_block["forecast"]["peak"] if load_block["forecast"] else None,
             "load_act_peak": load_block["actual"]["peak"] if load_block["actual"] else None,
+            "load_d2_err_pct": err_info["avg_pct"] if err_info else None,
+            "ren_share_pct": mix_block["renewable_share_pct"] if mix_block else None,
+            "net_load_peak": mix_block["net_load_peak"] if mix_block else None,
         })
 
     chart_overview_bar(summary["overview"], d0, d1, os.path.join(out, "charts", "overview_da_bar.png"))
