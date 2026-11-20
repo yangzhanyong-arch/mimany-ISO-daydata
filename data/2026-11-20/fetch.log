@@ -137,3 +137,25 @@
 2026-11-20 04:15:58,415 INFO this run: datasets ok 50/54 | file rows {'prices': 2415, 'as_prices': 3552, 'load': 312}
 2026-11-20 04:15:58,415 INFO   PJM still failing: da_lmp_D, da_lmp_D-1, da_lmp_D-2
 2026-11-20 04:15:58,415 INFO   SPP still failing: load_forecast_D
+2026-11-20 07:22:49,731 INFO report date D=2026-11-20 | DA days 2026-11-18,2026-11-19,2026-11-20 | RT day 2026-11-18 | ISOs PJM,SPP
+2026-11-20 07:22:53,897 INFO PJM    da_lmp_D               ok  rows=120   4.0s
+2026-11-20 07:22:58,319 INFO PJM    da_lmp_D-1             ok  rows=120   4.4s
+2026-11-20 07:23:02,049 INFO PJM    da_lmp_D-2             ok  rows=120   3.7s
+2026-11-20 07:23:06,752 INFO PJM    rt_lmp_D-2             ok  rows=120   4.7s
+2026-11-20 07:23:07,261 INFO PJM    as_da_D                ok  rows=120   0.5s
+2026-11-20 07:23:07,662 INFO PJM    as_da_D-1              ok  rows=120   0.4s
+2026-11-20 07:23:09,346 INFO PJM    load_forecast_D        ok  rows=24    1.7s
+2026-11-20 07:23:10,109 INFO PJM    load_actual_D-2        ok  rows=24    0.8s
+2026-11-20 07:23:10,109 INFO PJM done in 20s
+2026-11-20 07:23:13,393 INFO SPP    da_lmp_D               ok  rows=48    3.3s
+2026-11-20 07:23:16,357 INFO SPP    da_lmp_D-1             ok  rows=48    3.0s
+2026-11-20 07:23:19,329 INFO SPP    da_lmp_D-2             ok  rows=48    3.0s
+2026-11-20 07:23:19,580 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-20 07:26:50,730 INFO SPP    rt_lmp_D-2             ok  rows=48    211.4s
+2026-11-20 07:26:51,018 INFO SPP    as_da_D                ok  rows=168   0.3s
+2026-11-20 07:26:51,270 INFO SPP    as_da_D-1              ok  rows=168   0.3s
+2026-11-20 07:26:51,573 INFO SPP    load_forecast_D        ok  rows=24    0.3s
+2026-11-20 07:26:51,794 INFO SPP MTLF columns: ['Interval Start', 'Interval End', 'Publish Time', 'Forecast Type', 'MTLF', 'Averaged Actual', 'BAA']
+2026-11-20 07:26:51,800 INFO SPP    load_actual_D-2        ok  rows=24    0.2s
+2026-11-20 07:26:51,800 INFO SPP done in 222s
+2026-11-20 07:26:51,851 INFO this run: datasets ok 16/16 | file rows {'prices': 2780, 'as_prices': 3552, 'load': 336}

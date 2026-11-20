@@ -3,7 +3,7 @@
   "da_day": "2026-11-20",
   "da_prev_day": "2026-11-19",
   "rt_day": "2026-11-18",
-  "generated_at_utc": "2026-11-20T04:15:58Z",
+  "generated_at_utc": "2026-11-20T07:26:51Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -60,9 +60,9 @@
     ]
   },
   "rows": {
-    "prices": 2415,
+    "prices": 2780,
     "as_prices": 3552,
-    "load": 312
+    "load": 336
   },
   "status": {
     "CAISO": {
@@ -146,41 +146,44 @@
     },
     "PJM": {
       "da_lmp_D": {
-        "ok": false,
-        "error": "RuntimeError: Error: Failed after 3 retries for https://api.pjm.com/api/v1/da_hrl_lmps"
+        "ok": true,
+        "rows": 120,
+        "seconds": 4.0
       },
       "da_lmp_D-1": {
-        "ok": false,
-        "error": "RuntimeError: Error: Failed after 3 retries for https://api.pjm.com/api/v1/pnode"
+        "ok": true,
+        "rows": 120,
+        "seconds": 4.4
       },
       "da_lmp_D-2": {
-        "ok": false,
-        "error": "RuntimeError: Error: Failed after 3 retries for https://api.pjm.com/api/v1/da_hrl_lmps"
+        "ok": true,
+        "rows": 120,
+        "seconds": 3.7
       },
       "rt_lmp_D-2": {
         "ok": true,
-        "rows": 115,
-        "seconds": 102.5
+        "rows": 120,
+        "seconds": 4.7
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 16.6
+        "seconds": 0.5
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 33.7
+        "seconds": 0.4
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 35.2
+        "seconds": 1.7
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 34.3
+        "seconds": 0.8
       }
     },
     "MISO": {
@@ -308,22 +311,22 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.1
+        "seconds": 3.3
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.2
+        "seconds": 3.0
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.9
+        "seconds": 3.0
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 251.8
+        "seconds": 211.4
       },
       "as_da_D": {
         "ok": true,
@@ -333,23 +336,24 @@
       "as_da_D-1": {
         "ok": true,
         "rows": 168,
-        "seconds": 1.3
+        "seconds": 0.3
       },
       "load_forecast_D": {
-        "ok": false,
-        "error": "NoDataFoundException: No load forecast by BAA data found for 2026-11-20"
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.5
+        "seconds": 0.2
       }
     }
   },
   "notes": {
     "CAISO_as_region": "AS_CAISO_EXP",
     "PJM_key_source": "public",
-    "PJM_rt_source": "unverified",
+    "PJM_rt_source": "verified",
     "ISONE_reserve_source": "final",
     "SPP_rt_source": "5-minute interval files",
     "SPP_load_actual_source": "MTLF averaged actual"
@@ -364,6 +368,13 @@
         "MISO",
         "NYISO",
         "ISONE",
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-20T07:26:51Z",
+      "isos": [
+        "PJM",
         "SPP"
       ]
     }
