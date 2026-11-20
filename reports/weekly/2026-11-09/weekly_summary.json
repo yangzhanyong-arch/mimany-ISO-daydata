@@ -1,0 +1,933 @@
+{
+ "report_date": "2026-11-09",
+ "generated_at_bj": "2026-11-20 20:27",
+ "chart_font": "WenQuanYi Micro Hei",
+ "review_week": {
+  "start": "2026-11-01",
+  "end": "2026-11-07",
+  "days": [
+   "2026-11-01",
+   "2026-11-02",
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-05",
+   "2026-11-06",
+   "2026-11-07"
+  ]
+ },
+ "prev_week": {
+  "start": "2026-10-25",
+  "end": "2026-10-31",
+  "days": [
+   "2026-10-25",
+   "2026-10-26",
+   "2026-10-27",
+   "2026-10-28",
+   "2026-10-29",
+   "2026-10-30",
+   "2026-10-31"
+  ]
+ },
+ "isos": {
+  "CAISO": {
+   "label": "CAISO",
+   "name_cn": "加州独立系统运营商",
+   "main_hub": "SP15",
+   "da": {
+    "avg": 41.66,
+    "peak_avg": 35.59,
+    "offpeak_avg": 53.59,
+    "max": 68.69,
+    "max_at": "2026-11-06 HE7",
+    "min": 5.32,
+    "min_at": "2026-11-04 HE14",
+    "std": 16.96,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 169
+   },
+   "da_prev": {
+    "avg": 47.25,
+    "peak_avg": 46.74,
+    "offpeak_avg": 48.28,
+    "max": 53.97,
+    "max_at": "2026-10-31 HE18",
+    "min": 40.16,
+    "min_at": "2026-10-31 HE13",
+    "std": 4.83,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 43.28,
+    "peak_avg": 36.78,
+    "offpeak_avg": 56.04,
+    "max": 90.2,
+    "max_at": "2026-11-06 HE6",
+    "min": -1.18,
+    "min_at": "2026-11-02 HE13",
+    "std": 18.66,
+    "neg_hours": 1,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 169
+   },
+   "rt_prev": {
+    "avg": 45.82,
+    "peak_avg": 43.34,
+    "offpeak_avg": 50.79,
+    "max": 58.33,
+    "max_at": "2026-10-31 HE16",
+    "min": 34.35,
+    "min_at": "2026-10-31 HE14",
+    "std": 6.8,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": -5.5,
+   "dart_avg": -1.61,
+   "load": {
+    "avg_mw": 22035.0,
+    "peak_mw": 27684.0,
+    "wow_pct": 4.1,
+    "err_mw": 81.0,
+    "err_pct": 0.4
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "上调频",
+     "da_avg": 2.98,
+     "rt_avg": null
+    },
+    {
+     "label": "下调频",
+     "da_avg": 2.98,
+     "rt_avg": null
+    },
+    {
+     "label": "旋转/同步备用",
+     "da_avg": 0.69,
+     "rt_avg": null
+    },
+    {
+     "label": "非旋转备用",
+     "da_avg": 0.65,
+     "rt_avg": null
+    }
+   ]
+  },
+  "ERCOT": {
+   "label": "ERCOT",
+   "name_cn": "德州电力可靠性委员会",
+   "main_hub": "North",
+   "da": {
+    "avg": 34.31,
+    "peak_avg": 33.09,
+    "offpeak_avg": 36.71,
+    "max": 150.0,
+    "max_at": "2026-11-03 HE22",
+    "min": 1.29,
+    "min_at": "2026-11-05 HE10",
+    "std": 24.8,
+    "neg_hours": 0,
+    "spike_100_hours": 7,
+    "days": 7,
+    "hours": 169
+   },
+   "da_prev": {
+    "avg": 41.48,
+    "peak_avg": 43.17,
+    "offpeak_avg": 38.11,
+    "max": 54.64,
+    "max_at": "2026-10-31 HE18",
+    "min": 34.07,
+    "min_at": "2026-10-31 HE15",
+    "std": 6.59,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 29.25,
+    "peak_avg": 29.09,
+    "offpeak_avg": 29.58,
+    "max": 165.42,
+    "max_at": "2026-11-03 HE19",
+    "min": -13.48,
+    "min_at": "2026-11-03 HE13",
+    "std": 25.1,
+    "neg_hours": 12,
+    "spike_100_hours": 3,
+    "days": 7,
+    "hours": 169
+   },
+   "rt_prev": {
+    "avg": 49.84,
+    "peak_avg": 53.73,
+    "offpeak_avg": 42.05,
+    "max": 112.17,
+    "max_at": "2026-10-31 HE22",
+    "min": 33.51,
+    "min_at": "2026-10-31 HE4",
+    "std": 22.57,
+    "neg_hours": 0,
+    "spike_100_hours": 2,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": -41.3,
+   "dart_avg": 5.05,
+   "load": {
+    "avg_mw": 52533.0,
+    "peak_mw": 65881.0,
+    "wow_pct": 1.0,
+    "err_mw": 106.0,
+    "err_pct": 0.2
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "上调频",
+     "da_avg": 1.35,
+     "rt_avg": null
+    },
+    {
+     "label": "下调频",
+     "da_avg": 1.01,
+     "rt_avg": null
+    },
+    {
+     "label": "响应备用(RRS)",
+     "da_avg": 0.88,
+     "rt_avg": null
+    },
+    {
+     "label": "紧急备用(ECRS)",
+     "da_avg": 1.3,
+     "rt_avg": null
+    },
+    {
+     "label": "非旋转备用",
+     "da_avg": 5.5,
+     "rt_avg": null
+    }
+   ]
+  },
+  "PJM": {
+   "label": "PJM",
+   "name_cn": "PJM 互联",
+   "main_hub": "Western",
+   "da": {
+    "avg": 58.35,
+    "peak_avg": 62.94,
+    "offpeak_avg": 49.32,
+    "max": 166.52,
+    "max_at": "2026-11-03 HE18",
+    "min": 32.6,
+    "min_at": "2026-11-07 HE14",
+    "std": 19.71,
+    "neg_hours": 0,
+    "spike_100_hours": 6,
+    "days": 7,
+    "hours": 169
+   },
+   "da_prev": {
+    "avg": 42.74,
+    "peak_avg": 45.34,
+    "offpeak_avg": 37.53,
+    "max": 74.25,
+    "max_at": "2026-10-31 HE19",
+    "min": 32.71,
+    "min_at": "2026-10-31 HE14",
+    "std": 10.16,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 73.52,
+    "peak_avg": 76.99,
+    "offpeak_avg": 66.75,
+    "max": 508.09,
+    "max_at": "2026-11-01 HE1",
+    "min": 16.9,
+    "min_at": "2026-11-05 HE2",
+    "std": 67.67,
+    "neg_hours": 0,
+    "spike_100_hours": 32,
+    "days": 7,
+    "hours": 168
+   },
+   "rt_prev": {
+    "avg": 37.04,
+    "peak_avg": 39.43,
+    "offpeak_avg": 32.26,
+    "max": 65.87,
+    "max_at": "2026-10-31 HE9",
+    "min": 26.42,
+    "min_at": "2026-10-31 HE1",
+    "std": 11.22,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": 98.5,
+   "dart_avg": -15.28,
+   "load": {
+    "avg_mw": 85195.0,
+    "peak_mw": 97795.0,
+    "wow_pct": 7.2,
+    "err_mw": 89.0,
+    "err_pct": 0.1
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "旋转/同步备用",
+     "da_avg": 3.35,
+     "rt_avg": null
+    },
+    {
+     "label": "30分钟备用",
+     "da_avg": 0.0,
+     "rt_avg": null
+    },
+    {
+     "label": "Primary Reserve",
+     "da_avg": 1.86,
+     "rt_avg": null
+    }
+   ]
+  },
+  "MISO": {
+   "label": "MISO",
+   "name_cn": "中部大陆独立系统运营商",
+   "main_hub": "Indiana",
+   "da": {
+    "avg": 39.97,
+    "peak_avg": 43.16,
+    "offpeak_avg": 33.59,
+    "max": 106.57,
+    "max_at": "2026-11-06 HE18",
+    "min": 20.22,
+    "min_at": "2026-11-07 HE15",
+    "std": 13.36,
+    "neg_hours": 0,
+    "spike_100_hours": 1,
+    "days": 7,
+    "hours": 168
+   },
+   "da_prev": {
+    "avg": 37.15,
+    "peak_avg": 39.28,
+    "offpeak_avg": 32.9,
+    "max": 59.06,
+    "max_at": "2026-10-31 HE18",
+    "min": 30.18,
+    "min_at": "2026-10-31 HE3",
+    "std": 7.4,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 35.04,
+    "peak_avg": 37.02,
+    "offpeak_avg": 31.08,
+    "max": 88.69,
+    "max_at": "2026-11-01 HE17",
+    "min": 15.29,
+    "min_at": "2026-11-05 HE10",
+    "std": 12.72,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 168
+   },
+   "rt_prev": {
+    "avg": 44.45,
+    "peak_avg": 48.26,
+    "offpeak_avg": 36.83,
+    "max": 176.86,
+    "max_at": "2026-10-31 HE16",
+    "min": 30.33,
+    "min_at": "2026-10-31 HE21",
+    "std": 29.46,
+    "neg_hours": 0,
+    "spike_100_hours": 1,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": -21.2,
+   "dart_avg": 4.93,
+   "load": {
+    "avg_mw": 71441.0,
+    "peak_mw": 82036.0,
+    "wow_pct": 5.8,
+    "err_mw": 382.0,
+    "err_pct": 0.5
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "调频",
+     "da_avg": 19.5,
+     "rt_avg": null
+    },
+    {
+     "label": "旋转/同步备用",
+     "da_avg": 2.75,
+     "rt_avg": null
+    },
+    {
+     "label": "Supplemental Reserve",
+     "da_avg": 0.37,
+     "rt_avg": null
+    }
+   ]
+  },
+  "NYISO": {
+   "label": "NYISO",
+   "name_cn": "纽约独立系统运营商",
+   "main_hub": "Zone J(NYC)",
+   "da": {
+    "avg": 36.73,
+    "peak_avg": 39.97,
+    "offpeak_avg": 30.37,
+    "max": 80.13,
+    "max_at": "2026-11-04 HE18",
+    "min": 25.29,
+    "min_at": "2026-11-05 HE4",
+    "std": 8.93,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 169
+   },
+   "da_prev": {
+    "avg": 35.25,
+    "peak_avg": 36.49,
+    "offpeak_avg": 32.77,
+    "max": 52.37,
+    "max_at": "2026-10-31 HE19",
+    "min": 24.9,
+    "min_at": "2026-10-31 HE14",
+    "std": 8.19,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 36.33,
+    "peak_avg": 39.12,
+    "offpeak_avg": 30.84,
+    "max": 81.57,
+    "max_at": "2026-11-02 HE18",
+    "min": 21.01,
+    "min_at": "2026-11-01 HE13",
+    "std": 10.81,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 169
+   },
+   "rt_prev": {
+    "avg": 33.05,
+    "peak_avg": 34.3,
+    "offpeak_avg": 30.55,
+    "max": 46.21,
+    "max_at": "2026-10-31 HE8",
+    "min": 25.55,
+    "min_at": "2026-10-31 HE14",
+    "std": 5.92,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": 9.9,
+   "dart_avg": 0.4,
+   "load": {
+    "avg_mw": 14969.0,
+    "peak_mw": 18469.0,
+    "wow_pct": 8.0,
+    "err_mw": 350.0,
+    "err_pct": 2.4
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "调频",
+     "da_avg": 14.31,
+     "rt_avg": null
+    },
+    {
+     "label": "旋转/同步备用",
+     "da_avg": 7.94,
+     "rt_avg": null
+    },
+    {
+     "label": "非旋转备用",
+     "da_avg": 7.78,
+     "rt_avg": null
+    },
+    {
+     "label": "30分钟备用",
+     "da_avg": 7.62,
+     "rt_avg": null
+    }
+   ]
+  },
+  "ISONE": {
+   "label": "ISO-NE",
+   "name_cn": "新英格兰独立系统运营商",
+   "main_hub": "Mass Hub",
+   "da": {
+    "avg": 39.82,
+    "peak_avg": 42.52,
+    "offpeak_avg": 34.5,
+    "max": 77.76,
+    "max_at": "2026-11-04 HE18",
+    "min": 22.38,
+    "min_at": "2026-11-01 HE13",
+    "std": 9.56,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 169
+   },
+   "da_prev": {
+    "avg": 37.08,
+    "peak_avg": 38.35,
+    "offpeak_avg": 34.54,
+    "max": 54.77,
+    "max_at": "2026-10-31 HE19",
+    "min": 24.65,
+    "min_at": "2026-10-31 HE13",
+    "std": 10.0,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 42.1,
+    "peak_avg": 46.79,
+    "offpeak_avg": 32.83,
+    "max": 139.09,
+    "max_at": "2026-11-06 HE14",
+    "min": 6.79,
+    "min_at": "2026-11-01 HE13",
+    "std": 20.45,
+    "neg_hours": 0,
+    "spike_100_hours": 6,
+    "days": 7,
+    "hours": 167
+   },
+   "rt_prev": {
+    "avg": 33.16,
+    "peak_avg": 34.06,
+    "offpeak_avg": 31.35,
+    "max": 55.2,
+    "max_at": "2026-10-31 HE8",
+    "min": 20.97,
+    "min_at": "2026-10-31 HE12",
+    "std": 9.16,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": 27.0,
+   "dart_avg": -2.29,
+   "load": {
+    "avg_mw": 11496.0,
+    "peak_mw": 14796.0,
+    "wow_pct": 12.3,
+    "err_mw": 1.0,
+    "err_pct": 0.0
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "旋转/同步备用",
+     "da_avg": null,
+     "rt_avg": 0.28
+    },
+    {
+     "label": "10分钟备用(TMR)",
+     "da_avg": null,
+     "rt_avg": 0.0
+    },
+    {
+     "label": "Total Reserve Clearing Price",
+     "da_avg": null,
+     "rt_avg": 0.0
+    }
+   ]
+  },
+  "SPP": {
+   "label": "SPP",
+   "name_cn": "西南电力联营",
+   "main_hub": "North",
+   "da": {
+    "avg": 26.05,
+    "peak_avg": 30.35,
+    "offpeak_avg": 17.6,
+    "max": 93.47,
+    "max_at": "2026-11-06 HE18",
+    "min": -14.19,
+    "min_at": "2026-11-02 HE3",
+    "std": 20.04,
+    "neg_hours": 18,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 169
+   },
+   "da_prev": {
+    "avg": 28.62,
+    "peak_avg": 29.81,
+    "offpeak_avg": 26.24,
+    "max": 40.44,
+    "max_at": "2026-10-31 HE19",
+    "min": 22.72,
+    "min_at": "2026-10-31 HE24",
+    "std": 4.17,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt": {
+    "avg": 21.1,
+    "peak_avg": 22.89,
+    "offpeak_avg": 17.53,
+    "max": 81.01,
+    "max_at": "2026-11-04 HE18",
+    "min": -26.89,
+    "min_at": "2026-11-02 HE1",
+    "std": 14.68,
+    "neg_hours": 13,
+    "spike_100_hours": 0,
+    "days": 7,
+    "hours": 168
+   },
+   "rt_prev": {
+    "avg": 37.64,
+    "peak_avg": 40.61,
+    "offpeak_avg": 31.7,
+    "max": 85.57,
+    "max_at": "2026-10-31 HE16",
+    "min": 25.24,
+    "min_at": "2026-10-31 HE21",
+    "std": 13.17,
+    "neg_hours": 0,
+    "spike_100_hours": 0,
+    "days": 1,
+    "hours": 24
+   },
+   "rt_wow_pct": -43.9,
+   "dart_avg": 5.16,
+   "load": {
+    "avg_mw": 33513.0,
+    "peak_mw": 38642.0,
+    "wow_pct": 4.8,
+    "err_mw": 10.0,
+    "err_pct": 0.0
+   },
+   "fuel_mix": null,
+   "as_summary": [
+    {
+     "label": "上调频",
+     "da_avg": 13.5,
+     "rt_avg": null
+    },
+    {
+     "label": "下调频",
+     "da_avg": 6.47,
+     "rt_avg": null
+    },
+    {
+     "label": "旋转/同步备用",
+     "da_avg": 7.38,
+     "rt_avg": null
+    },
+    {
+     "label": "Ramp_Dn",
+     "da_avg": 0.01,
+     "rt_avg": null
+    },
+    {
+     "label": "Unc_Up",
+     "da_avg": 1.28,
+     "rt_avg": null
+    },
+    {
+     "label": "Supp",
+     "da_avg": 3.48,
+     "rt_avg": null
+    },
+    {
+     "label": "Ramp_Up",
+     "da_avg": 3.87,
+     "rt_avg": null
+    }
+   ]
+  }
+ },
+ "overview": [
+  {
+   "iso": "CAISO",
+   "label": "CAISO",
+   "main_hub": "SP15",
+   "rt_avg": 43.28,
+   "rt_prev_avg": 45.82,
+   "rt_wow_pct": -5.5,
+   "rt_peak_avg": 36.78,
+   "rt_offpeak_avg": 56.04,
+   "rt_neg_hours": 1,
+   "da_avg": 41.66,
+   "dart_avg": -1.61,
+   "load_avg_mw": 22035.0,
+   "load_wow_pct": 4.1,
+   "load_err_pct": 0.4,
+   "ren_share_pct": null
+  },
+  {
+   "iso": "ERCOT",
+   "label": "ERCOT",
+   "main_hub": "North",
+   "rt_avg": 29.25,
+   "rt_prev_avg": 49.84,
+   "rt_wow_pct": -41.3,
+   "rt_peak_avg": 29.09,
+   "rt_offpeak_avg": 29.58,
+   "rt_neg_hours": 12,
+   "da_avg": 34.31,
+   "dart_avg": 5.05,
+   "load_avg_mw": 52533.0,
+   "load_wow_pct": 1.0,
+   "load_err_pct": 0.2,
+   "ren_share_pct": null
+  },
+  {
+   "iso": "PJM",
+   "label": "PJM",
+   "main_hub": "Western",
+   "rt_avg": 73.52,
+   "rt_prev_avg": 37.04,
+   "rt_wow_pct": 98.5,
+   "rt_peak_avg": 76.99,
+   "rt_offpeak_avg": 66.75,
+   "rt_neg_hours": 0,
+   "da_avg": 58.35,
+   "dart_avg": -15.28,
+   "load_avg_mw": 85195.0,
+   "load_wow_pct": 7.2,
+   "load_err_pct": 0.1,
+   "ren_share_pct": null
+  },
+  {
+   "iso": "MISO",
+   "label": "MISO",
+   "main_hub": "Indiana",
+   "rt_avg": 35.04,
+   "rt_prev_avg": 44.45,
+   "rt_wow_pct": -21.2,
+   "rt_peak_avg": 37.02,
+   "rt_offpeak_avg": 31.08,
+   "rt_neg_hours": 0,
+   "da_avg": 39.97,
+   "dart_avg": 4.93,
+   "load_avg_mw": 71441.0,
+   "load_wow_pct": 5.8,
+   "load_err_pct": 0.5,
+   "ren_share_pct": null
+  },
+  {
+   "iso": "NYISO",
+   "label": "NYISO",
+   "main_hub": "Zone J(NYC)",
+   "rt_avg": 36.33,
+   "rt_prev_avg": 33.05,
+   "rt_wow_pct": 9.9,
+   "rt_peak_avg": 39.12,
+   "rt_offpeak_avg": 30.84,
+   "rt_neg_hours": 0,
+   "da_avg": 36.73,
+   "dart_avg": 0.4,
+   "load_avg_mw": 14969.0,
+   "load_wow_pct": 8.0,
+   "load_err_pct": 2.4,
+   "ren_share_pct": null
+  },
+  {
+   "iso": "ISONE",
+   "label": "ISO-NE",
+   "main_hub": "Mass Hub",
+   "rt_avg": 42.1,
+   "rt_prev_avg": 33.16,
+   "rt_wow_pct": 27.0,
+   "rt_peak_avg": 46.79,
+   "rt_offpeak_avg": 32.83,
+   "rt_neg_hours": 0,
+   "da_avg": 39.82,
+   "dart_avg": -2.29,
+   "load_avg_mw": 11496.0,
+   "load_wow_pct": 12.3,
+   "load_err_pct": 0.0,
+   "ren_share_pct": null
+  },
+  {
+   "iso": "SPP",
+   "label": "SPP",
+   "main_hub": "North",
+   "rt_avg": 21.1,
+   "rt_prev_avg": 37.64,
+   "rt_wow_pct": -43.9,
+   "rt_peak_avg": 22.89,
+   "rt_offpeak_avg": 17.53,
+   "rt_neg_hours": 13,
+   "da_avg": 26.05,
+   "dart_avg": 5.16,
+   "load_avg_mw": 33513.0,
+   "load_wow_pct": 4.8,
+   "load_err_pct": 0.0,
+   "ren_share_pct": null
+  }
+ ],
+ "basis": [
+  {
+   "iso": "CAISO",
+   "iso_label": "CAISO",
+   "pair": "SP15 - NP15",
+   "cur_avg": -6.34,
+   "prev_avg": 2.52
+  },
+  {
+   "iso": "ERCOT",
+   "iso_label": "ERCOT",
+   "pair": "Houston - West",
+   "cur_avg": 7.48,
+   "prev_avg": -31.16
+  },
+  {
+   "iso": "PJM",
+   "iso_label": "PJM",
+   "pair": "Dominion - Western",
+   "cur_avg": 26.28,
+   "prev_avg": 2.57
+  },
+  {
+   "iso": "MISO",
+   "iso_label": "MISO",
+   "pair": "Louisiana - Minn.",
+   "cur_avg": 10.83,
+   "prev_avg": 0.58
+  },
+  {
+   "iso": "NYISO",
+   "iso_label": "NYISO",
+   "pair": "NYC(J) - West(A)",
+   "cur_avg": 3.37,
+   "prev_avg": 1.72
+  },
+  {
+   "iso": "ISONE",
+   "iso_label": "ISO-NE",
+   "pair": "Boston - Maine",
+   "cur_avg": 1.05,
+   "prev_avg": 2.5
+  },
+  {
+   "iso": "SPP",
+   "iso_label": "SPP",
+   "pair": "South - North",
+   "cur_avg": -8.58,
+   "prev_avg": -2.43
+  }
+ ],
+ "gas_weekly": [],
+ "early_week_outlook": [
+  {
+   "iso": "CAISO",
+   "label": "CAISO",
+   "main_hub": "SP15",
+   "sun_da_avg": 35.84,
+   "mon_da_avg": 47.4,
+   "mon_vs_last_da_pct": 13.8,
+   "mon_load_peak_mw": 29899.0
+  },
+  {
+   "iso": "ERCOT",
+   "label": "ERCOT",
+   "main_hub": "North",
+   "sun_da_avg": 39.49,
+   "mon_da_avg": 44.23,
+   "mon_vs_last_da_pct": 28.9,
+   "mon_load_peak_mw": 53826.0
+  },
+  {
+   "iso": "PJM",
+   "label": "PJM",
+   "main_hub": "Western",
+   "sun_da_avg": 42.45,
+   "mon_da_avg": 56.77,
+   "mon_vs_last_da_pct": -2.7,
+   "mon_load_peak_mw": 96361.0
+  },
+  {
+   "iso": "MISO",
+   "label": "MISO",
+   "main_hub": "Indiana",
+   "sun_da_avg": 27.32,
+   "mon_da_avg": 35.98,
+   "mon_vs_last_da_pct": -10.0,
+   "mon_load_peak_mw": 78181.0
+  },
+  {
+   "iso": "NYISO",
+   "label": "NYISO",
+   "main_hub": "Zone J(NYC)",
+   "sun_da_avg": 29.75,
+   "mon_da_avg": 36.9,
+   "mon_vs_last_da_pct": 0.5,
+   "mon_load_peak_mw": 17927.0
+  },
+  {
+   "iso": "ISONE",
+   "label": "ISO-NE",
+   "main_hub": "Mass Hub",
+   "sun_da_avg": 38.81,
+   "mon_da_avg": 41.57,
+   "mon_vs_last_da_pct": 4.4,
+   "mon_load_peak_mw": 14900.0
+  },
+  {
+   "iso": "SPP",
+   "label": "SPP",
+   "main_hub": "North",
+   "sun_da_avg": 29.86,
+   "mon_da_avg": 24.68,
+   "mon_vs_last_da_pct": -5.3,
+   "mon_load_peak_mw": 36001.0
+  }
+ ],
+ "highlights": [
+  "**价格格局**：本周全美最高 RT 均价出现在 **PJM**（73.5 $/MWh），最低为 **SPP**（21.1 $/MWh）。",
+  "**最大波动区**：**PJM** 实时均价环比变动 **+98.5%**。",
+  "**负电价频次**：本周出现实时负电价的地区包括 CAISO(1h)、ERCOT(12h)、SPP(13h)。",
+  "**DART 系统性偏差**：本周日均 |DA-RT| ≥ 5 $/MWh 的市场：ERCOT(+5.0)、PJM(-15.3)、SPP(+5.2)。"
+ ]
+}
