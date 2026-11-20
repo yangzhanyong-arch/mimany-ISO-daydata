@@ -3,7 +3,7 @@
   "da_day": "2026-11-20",
   "da_prev_day": "2026-11-19",
   "rt_day": "2026-11-18",
-  "generated_at_utc": "2026-11-20T09:19:14Z",
+  "generated_at_utc": "2026-11-20T11:32:03Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -71,89 +71,89 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 72,
-        "seconds": 5.5
+        "seconds": 6.1
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 72,
-        "seconds": 5.4
+        "seconds": 5.9
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 72,
-        "seconds": 5.4
+        "seconds": 5.8
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 72,
-        "seconds": 6.1
+        "seconds": 6.7
       },
       "as_da_D-1_D": {
         "ok": true,
         "rows": 192,
-        "seconds": 12.6
+        "seconds": 9.7
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 4.3
+        "seconds": 4.7
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.3
+        "seconds": 0.7
       },
       "load_forecast_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 8.4
+        "seconds": 8.8
       },
       "fuel_mix_D-2": {
         "ok": true,
         "rows": 312,
-        "seconds": 0.1
+        "seconds": 0.3
       },
       "gas_D-2": {
         "ok": true,
         "rows": 1,
-        "seconds": 4.4
+        "seconds": 4.6
       }
     },
     "ERCOT": {
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.7
+        "seconds": 1.9
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 2.0
+        "seconds": 5.2
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.7
+        "seconds": 10.5
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 50.6
+        "seconds": 29.6
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.0
+        "seconds": 0.8
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.9
+        "seconds": 1.0
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.9
+        "seconds": 0.4
       },
       "load_actual_D-2": {
         "ok": true,
@@ -163,7 +163,7 @@
       "as_rt_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 49.1
+        "seconds": 52.7
       },
       "load_forecast_D-2": {
         "ok": true,
@@ -179,27 +179,27 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 5.0
+        "seconds": 3.6
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 4.4
+        "seconds": 3.7
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 5.1
+        "seconds": 4.8
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 4.5
+        "seconds": 4.7
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.5
+        "seconds": 0.6
       },
       "as_da_D-1": {
         "ok": true,
@@ -209,7 +209,7 @@
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.3
+        "seconds": 1.8
       },
       "load_actual_D-2": {
         "ok": true,
@@ -219,7 +219,7 @@
       "load_forecast_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.7
+        "seconds": 0.4
       },
       "fuel_mix_D-2": {
         "ok": true,
@@ -231,17 +231,17 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.4
+        "seconds": 0.5
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.3
+        "seconds": 0.4
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.4
+        "seconds": 0.3
       },
       "rt_lmp_D-2": {
         "ok": true,
@@ -251,12 +251,12 @@
       "as_da_D": {
         "ok": true,
         "rows": 72,
-        "seconds": 0.6
+        "seconds": 0.5
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 72,
-        "seconds": 0.4
+        "seconds": 0.5
       },
       "load_forecast_D": {
         "ok": true,
@@ -266,7 +266,7 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.3
+        "seconds": 0.2
       },
       "load_forecast_D-2": {
         "ok": true,
@@ -282,131 +282,131 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.4
+        "seconds": 0.6
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.4
+        "seconds": 0.6
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.3
+        "seconds": 0.7
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.2
+        "seconds": 0.6
       },
       "as_da_D": {
         "ok": true,
         "rows": 1056,
-        "seconds": 0.3
+        "seconds": 0.1
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 1056,
-        "seconds": 0.3
+        "seconds": 0.1
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.3
+        "seconds": 0.1
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.5
+        "seconds": 0.2
       },
       "load_forecast_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.4
+        "seconds": 0.1
       },
       "fuel_mix_D-2": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.6
+        "seconds": 0.3
       }
     },
     "ISONE": {
       "da_lmp_D": {
         "ok": true,
         "rows": 96,
-        "seconds": 1.9
+        "seconds": 0.9
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 96,
-        "seconds": 1.4
+        "seconds": 0.7
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 96,
-        "seconds": 0.9
+        "seconds": 0.6
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 92,
-        "seconds": 2.3
+        "seconds": 1.3
       },
       "as_rt_D-2": {
         "ok": true,
         "rows": 288,
-        "seconds": 10.7
+        "seconds": 0.6
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.4
+        "seconds": 0.2
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 90.7
+        "seconds": 0.4
       },
       "load_forecast_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.3
+        "seconds": 0.2
       },
       "fuel_mix_D-2": {
         "ok": true,
         "rows": 264,
-        "seconds": 91.3
+        "seconds": 0.5
       }
     },
     "SPP": {
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.8
+        "seconds": 3.2
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 48,
-        "seconds": 5.1
+        "seconds": 3.2
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 4.4
+        "seconds": 2.9
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 289.2
+        "seconds": 211.4
       },
       "as_da_D": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.5
+        "seconds": 0.3
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.5
+        "seconds": 0.3
       },
       "load_forecast_D": {
         "ok": true,
@@ -416,17 +416,17 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.5
+        "seconds": 0.3
       },
       "load_forecast_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.5
+        "seconds": 0.2
       },
       "fuel_mix_D-2": {
         "ok": true,
         "rows": 264,
-        "seconds": 30.3
+        "seconds": 19.3
       }
     }
   },
@@ -460,6 +460,18 @@
     },
     {
       "at_utc": "2026-11-20T09:19:14Z",
+      "isos": [
+        "CAISO",
+        "ERCOT",
+        "PJM",
+        "MISO",
+        "NYISO",
+        "ISONE",
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-20T11:32:03Z",
       "isos": [
         "CAISO",
         "ERCOT",

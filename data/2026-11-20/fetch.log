@@ -244,3 +244,88 @@
 2026-11-20 09:19:14,481 INFO this run: datasets ok 68/70 | file rows {'prices': 2780, 'as_prices': 3576, 'load': 504, 'fuel_mix': 1248, 'gas_prices': 1}
 2026-11-20 09:19:14,481 INFO   ERCOT still failing: fuel_mix_D-2
 2026-11-20 09:19:14,481 INFO   MISO still failing: fuel_mix_D-2
+2026-11-20 11:24:12,479 INFO report date D=2026-11-20 | DA days 2026-11-18,2026-11-19,2026-11-20 | RT day 2026-11-18 | ISOs CAISO,ERCOT,PJM,MISO,NYISO,ISONE,SPP
+2026-11-20 11:24:18,580 INFO CAISO  da_lmp_D               ok  rows=72    6.1s
+2026-11-20 11:24:24,458 INFO CAISO  da_lmp_D-1             ok  rows=72    5.9s
+2026-11-20 11:24:30,239 INFO CAISO  da_lmp_D-2             ok  rows=72    5.8s
+2026-11-20 11:24:36,944 INFO CAISO  rt_lmp_D-2             ok  rows=72    6.7s
+2026-11-20 11:24:46,595 INFO CAISO  as_da_D-1_D            ok  rows=192   9.7s
+2026-11-20 11:24:51,272 INFO CAISO  load_forecast_D        ok  rows=24    4.7s
+2026-11-20 11:25:00,029 INFO CAISO  load_forecast_D-2      ok  rows=24    8.8s
+2026-11-20 11:25:00,685 INFO CAISO  load_actual_D-2        ok  rows=24    0.7s
+2026-11-20 11:25:00,979 INFO CAISO  fuel_mix_D-2           ok  rows=312   0.3s
+2026-11-20 11:25:05,603 INFO CAISO  gas_D-2                ok  rows=1     4.6s
+2026-11-20 11:25:05,604 INFO CAISO done in 53s
+2026-11-20 11:25:07,540 INFO ERCOT  da_lmp_D               ok  rows=120   1.9s
+2026-11-20 11:25:12,781 INFO ERCOT  da_lmp_D-1             ok  rows=120   5.2s
+2026-11-20 11:25:23,285 INFO ERCOT  da_lmp_D-2             ok  rows=120   10.5s
+2026-11-20 11:25:52,842 INFO ERCOT  rt_lmp_D-2             ok  rows=120   29.6s
+2026-11-20 11:25:53,646 INFO ERCOT  as_da_D                ok  rows=120   0.8s
+2026-11-20 11:25:54,624 INFO ERCOT  as_da_D-1              ok  rows=120   1.0s
+2026-11-20 11:26:47,307 INFO ERCOT  as_rt_D-2              ok  rows=24    52.7s
+2026-11-20 11:26:47,748 INFO ERCOT  load_forecast_D        ok  rows=24    0.4s
+2026-11-20 11:26:49,337 INFO ERCOT  load_actual_D-2        ok  rows=24    1.6s
+2026-11-20 11:26:49,338 WARNING ERCOT  fuel_mix_D-2           attempt 1 failed: NotSupported: 
+2026-11-20 11:27:09,339 WARNING ERCOT  fuel_mix_D-2           attempt 2 failed: NotSupported: 
+2026-11-20 11:27:09,339 ERROR ERCOT  fuel_mix_D-2           FAILED
+2026-11-20 11:27:09,339 INFO ERCOT done in 124s
+2026-11-20 11:27:13,168 INFO PJM    da_lmp_D               ok  rows=120   3.6s
+2026-11-20 11:27:16,863 INFO PJM    da_lmp_D-1             ok  rows=120   3.7s
+2026-11-20 11:27:21,657 INFO PJM    da_lmp_D-2             ok  rows=120   4.8s
+2026-11-20 11:27:26,318 INFO PJM    rt_lmp_D-2             ok  rows=120   4.7s
+2026-11-20 11:27:26,895 INFO PJM    as_da_D                ok  rows=120   0.6s
+2026-11-20 11:27:27,293 INFO PJM    as_da_D-1              ok  rows=120   0.4s
+2026-11-20 11:27:29,092 INFO PJM    load_forecast_D        ok  rows=24    1.8s
+2026-11-20 11:27:29,464 INFO PJM    load_forecast_D-2      ok  rows=24    0.4s
+2026-11-20 11:27:30,077 INFO PJM    load_actual_D-2        ok  rows=24    0.6s
+2026-11-20 11:27:30,485 INFO PJM    fuel_mix_D-2           ok  rows=240   0.4s
+2026-11-20 11:27:30,485 INFO PJM done in 21s
+2026-11-20 11:27:31,007 INFO MISO   da_lmp_D               ok  rows=120   0.5s
+2026-11-20 11:27:31,392 INFO MISO   da_lmp_D-1             ok  rows=120   0.4s
+2026-11-20 11:27:31,648 INFO MISO   da_lmp_D-2             ok  rows=120   0.3s
+2026-11-20 11:27:32,031 INFO MISO   rt_lmp_D-2             ok  rows=120   0.4s
+2026-11-20 11:27:32,533 INFO MISO   as_da_D                ok  rows=72    0.5s
+2026-11-20 11:27:33,022 INFO MISO   as_da_D-1              ok  rows=72    0.5s
+2026-11-20 11:27:33,087 INFO MISO   load_forecast_D        ok  rows=24    0.1s
+2026-11-20 11:27:33,301 INFO MISO   load_forecast_D-2      ok  rows=24    0.2s
+2026-11-20 11:27:33,537 INFO MISO   load_actual_D-2        ok  rows=24    0.2s
+2026-11-20 11:27:33,537 WARNING MISO   fuel_mix_D-2           attempt 1 failed: NotSupported: Only 'latest', 'today', and yesterday's date are supported
+2026-11-20 11:27:53,538 WARNING MISO   fuel_mix_D-2           attempt 2 failed: NotSupported: Only 'latest', 'today', and yesterday's date are supported
+2026-11-20 11:27:53,538 ERROR MISO   fuel_mix_D-2           FAILED
+2026-11-20 11:27:53,538 INFO MISO done in 23s
+2026-11-20 11:27:54,185 INFO NYISO  da_lmp_D               ok  rows=120   0.6s
+2026-11-20 11:27:54,786 INFO NYISO  da_lmp_D-1             ok  rows=120   0.6s
+2026-11-20 11:27:55,478 INFO NYISO  da_lmp_D-2             ok  rows=120   0.7s
+2026-11-20 11:27:56,100 INFO NYISO  rt_lmp_D-2             ok  rows=120   0.6s
+2026-11-20 11:27:56,243 INFO NYISO  as_da_D                ok  rows=1056  0.1s
+2026-11-20 11:27:56,365 INFO NYISO  as_da_D-1              ok  rows=1056  0.1s
+2026-11-20 11:27:56,457 INFO NYISO  load_forecast_D        ok  rows=24    0.1s
+2026-11-20 11:27:56,526 INFO NYISO  load_forecast_D-2      ok  rows=24    0.1s
+2026-11-20 11:27:56,703 INFO NYISO  load_actual_D-2        ok  rows=24    0.2s
+2026-11-20 11:27:56,987 INFO NYISO  fuel_mix_D-2           ok  rows=168   0.3s
+2026-11-20 11:27:56,987 INFO NYISO done in 3s
+2026-11-20 11:27:57,848 INFO ISONE  da_lmp_D               ok  rows=96    0.9s
+2026-11-20 11:27:58,579 INFO ISONE  da_lmp_D-1             ok  rows=96    0.7s
+2026-11-20 11:27:59,225 INFO ISONE  da_lmp_D-2             ok  rows=96    0.6s
+2026-11-20 11:28:00,478 INFO ISONE  rt_lmp_D-2             ok  rows=92    1.3s
+2026-11-20 11:28:01,093 INFO ISONE  as_rt_D-2              ok  rows=288   0.6s
+2026-11-20 11:28:01,297 INFO ISONE  load_forecast_D        ok  rows=24    0.2s
+2026-11-20 11:28:01,492 INFO ISONE  load_forecast_D-2      ok  rows=24    0.2s
+2026-11-20 11:28:01,922 INFO ISONE  load_actual_D-2        ok  rows=24    0.4s
+2026-11-20 11:28:02,410 INFO ISONE  fuel_mix_D-2           ok  rows=264   0.5s
+2026-11-20 11:28:02,410 INFO ISONE done in 5s
+2026-11-20 11:28:05,634 INFO SPP    da_lmp_D               ok  rows=48    3.2s
+2026-11-20 11:28:08,871 INFO SPP    da_lmp_D-1             ok  rows=48    3.2s
+2026-11-20 11:28:11,756 INFO SPP    da_lmp_D-2             ok  rows=48    2.9s
+2026-11-20 11:28:11,983 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-20 11:31:43,179 INFO SPP    rt_lmp_D-2             ok  rows=48    211.4s
+2026-11-20 11:31:43,435 INFO SPP    as_da_D                ok  rows=168   0.3s
+2026-11-20 11:31:43,725 INFO SPP    as_da_D-1              ok  rows=168   0.3s
+2026-11-20 11:31:44,033 INFO SPP    load_forecast_D        ok  rows=24    0.3s
+2026-11-20 11:31:44,277 INFO SPP    load_forecast_D-2      ok  rows=24    0.2s
+2026-11-20 11:31:44,565 INFO SPP    load_actual_D-2        ok  rows=24    0.3s
+2026-11-20 11:32:03,876 INFO SPP    fuel_mix_D-2           ok  rows=264   19.3s
+2026-11-20 11:32:03,876 INFO SPP done in 241s
+2026-11-20 11:32:03,958 INFO this run: datasets ok 68/70 | file rows {'prices': 2780, 'as_prices': 3576, 'load': 504, 'fuel_mix': 1248, 'gas_prices': 1}
+2026-11-20 11:32:03,958 INFO   ERCOT still failing: fuel_mix_D-2
+2026-11-20 11:32:03,958 INFO   MISO still failing: fuel_mix_D-2
