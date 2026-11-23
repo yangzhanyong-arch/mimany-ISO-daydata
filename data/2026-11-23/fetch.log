@@ -84,3 +84,17 @@
 2026-11-23 03:20:52,382 INFO SPP done in 360s
 2026-11-23 03:20:52,450 INFO this run: datasets ok 69/70 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 480, 'fuel_mix': 1608, 'gas_prices': 1}
 2026-11-23 03:20:52,450 INFO   SPP still failing: load_forecast_D
+2026-11-23 07:46:19,098 INFO report date D=2026-11-23 | DA days 2026-11-21,2026-11-22,2026-11-23 | RT day 2026-11-21 | ISOs SPP
+2026-11-23 07:46:23,574 INFO SPP    da_lmp_D               ok  rows=48    4.5s
+2026-11-23 07:46:27,452 INFO SPP    da_lmp_D-1             ok  rows=48    3.9s
+2026-11-23 07:46:31,394 INFO SPP    da_lmp_D-2             ok  rows=48    3.9s
+2026-11-23 07:46:31,874 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-23 07:50:38,901 INFO SPP    rt_lmp_D-2             ok  rows=48    247.5s
+2026-11-23 07:50:39,225 INFO SPP    as_da_D                ok  rows=168   0.3s
+2026-11-23 07:50:39,553 INFO SPP    as_da_D-1              ok  rows=168   0.3s
+2026-11-23 07:50:39,929 INFO SPP    load_forecast_D        ok  rows=24    0.4s
+2026-11-23 07:50:40,309 INFO SPP    load_forecast_D-2      ok  rows=24    0.4s
+2026-11-23 07:50:40,635 INFO SPP    load_actual_D-2        ok  rows=24    0.3s
+2026-11-23 07:51:06,671 INFO SPP    fuel_mix_D-2           ok  rows=264   26.0s
+2026-11-23 07:51:06,671 INFO SPP done in 288s
+2026-11-23 07:51:06,746 INFO this run: datasets ok 10/10 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 504, 'fuel_mix': 1608, 'gas_prices': 1}
