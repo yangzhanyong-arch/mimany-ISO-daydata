@@ -83,3 +83,33 @@
 2026-11-24 06:38:55,349 INFO this run: datasets ok 68/70 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 504, 'fuel_mix': 1224, 'gas_prices': 1}
 2026-11-24 06:38:55,349 INFO   ERCOT still failing: fuel_mix_D-2
 2026-11-24 06:38:55,349 INFO   MISO still failing: fuel_mix_D-2
+2026-11-24 09:58:57,931 INFO report date D=2026-11-24 | DA days 2026-11-22,2026-11-23,2026-11-24 | RT day 2026-11-22 | ISOs ERCOT,MISO
+2026-11-24 09:58:59,327 INFO ERCOT  da_lmp_D               ok  rows=120   1.4s
+2026-11-24 09:59:00,817 INFO ERCOT  da_lmp_D-1             ok  rows=120   1.5s
+2026-11-24 09:59:02,349 INFO ERCOT  da_lmp_D-2             ok  rows=120   1.5s
+2026-11-24 09:59:42,588 INFO ERCOT  rt_lmp_D-2             ok  rows=120   40.2s
+2026-11-24 09:59:43,694 INFO ERCOT  as_da_D                ok  rows=120   1.1s
+2026-11-24 09:59:44,255 INFO ERCOT  as_da_D-1              ok  rows=120   0.6s
+2026-11-24 10:01:26,417 INFO ERCOT  as_rt_D-2              ok  rows=24    102.2s
+2026-11-24 10:01:26,936 INFO ERCOT  load_forecast_D        ok  rows=24    0.5s
+2026-11-24 10:01:27,554 INFO ERCOT  load_actual_D-2        ok  rows=24    0.6s
+2026-11-24 10:01:27,555 WARNING ERCOT  fuel_mix_D-2           attempt 1 failed: NotSupported: 
+2026-11-24 10:01:47,556 WARNING ERCOT  fuel_mix_D-2           attempt 2 failed: NotSupported: 
+2026-11-24 10:01:47,556 ERROR ERCOT  fuel_mix_D-2           FAILED
+2026-11-24 10:01:47,556 INFO ERCOT done in 170s
+2026-11-24 10:01:48,170 INFO MISO   da_lmp_D               ok  rows=120   0.6s
+2026-11-24 10:01:48,572 INFO MISO   da_lmp_D-1             ok  rows=120   0.4s
+2026-11-24 10:01:49,090 INFO MISO   da_lmp_D-2             ok  rows=120   0.5s
+2026-11-24 10:01:49,495 INFO MISO   rt_lmp_D-2             ok  rows=120   0.4s
+2026-11-24 10:01:49,926 INFO MISO   as_da_D                ok  rows=72    0.4s
+2026-11-24 10:01:50,373 INFO MISO   as_da_D-1              ok  rows=72    0.4s
+2026-11-24 10:01:50,421 INFO MISO   load_forecast_D        ok  rows=24    0.0s
+2026-11-24 10:01:50,489 INFO MISO   load_forecast_D-2      ok  rows=24    0.1s
+2026-11-24 10:01:50,693 INFO MISO   load_actual_D-2        ok  rows=24    0.2s
+2026-11-24 10:01:50,694 WARNING MISO   fuel_mix_D-2           attempt 1 failed: NotSupported: Only 'latest', 'today', and yesterday's date are supported
+2026-11-24 10:02:10,696 WARNING MISO   fuel_mix_D-2           attempt 2 failed: NotSupported: Only 'latest', 'today', and yesterday's date are supported
+2026-11-24 10:02:10,696 ERROR MISO   fuel_mix_D-2           FAILED
+2026-11-24 10:02:10,696 INFO MISO done in 23s
+2026-11-24 10:02:10,766 INFO this run: datasets ok 19/21 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 504, 'fuel_mix': 1224, 'gas_prices': 1}
+2026-11-24 10:02:10,766 INFO   ERCOT still failing: fuel_mix_D-2
+2026-11-24 10:02:10,766 INFO   MISO still failing: fuel_mix_D-2

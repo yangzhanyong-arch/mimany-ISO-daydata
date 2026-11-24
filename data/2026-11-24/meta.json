@@ -3,7 +3,7 @@
   "da_day": "2026-11-24",
   "da_prev_day": "2026-11-23",
   "rt_day": "2026-11-22",
-  "generated_at_utc": "2026-11-24T06:38:55Z",
+  "generated_at_utc": "2026-11-24T10:02:10Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -123,42 +123,42 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.8
+        "seconds": 1.4
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.9
+        "seconds": 1.5
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.0
+        "seconds": 1.5
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 79.6
+        "seconds": 40.2
       },
       "as_da_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.9
+        "seconds": 1.1
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 120,
-        "seconds": 1.0
+        "seconds": 0.6
       },
       "as_rt_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 51.3
+        "seconds": 102.2
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.0
+        "seconds": 0.5
       },
       "load_forecast_D-2": {
         "ok": true,
@@ -168,7 +168,7 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 1.0
+        "seconds": 0.6
       },
       "fuel_mix_D-2": {
         "ok": false,
@@ -231,7 +231,7 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.5
+        "seconds": 0.6
       },
       "da_lmp_D-1": {
         "ok": true,
@@ -241,37 +241,37 @@
       "da_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.7
+        "seconds": 0.5
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 120,
-        "seconds": 0.9
+        "seconds": 0.4
       },
       "as_da_D": {
         "ok": true,
         "rows": 72,
-        "seconds": 0.5
+        "seconds": 0.4
       },
       "as_da_D-1": {
         "ok": true,
         "rows": 72,
-        "seconds": 0.6
+        "seconds": 0.4
       },
       "load_forecast_D": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.2
+        "seconds": 0.0
       },
       "load_forecast_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.4
+        "seconds": 0.1
       },
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.7
+        "seconds": 0.2
       },
       "fuel_mix_D-2": {
         "ok": false,
@@ -449,6 +449,13 @@
         "NYISO",
         "ISONE",
         "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-24T10:02:10Z",
+      "isos": [
+        "ERCOT",
+        "MISO"
       ]
     }
   ]
