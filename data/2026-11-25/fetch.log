@@ -86,3 +86,31 @@
 2026-11-25 05:13:43,115 INFO this run: datasets ok 68/70 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 480, 'fuel_mix': 1440, 'gas_prices': 1}
 2026-11-25 05:13:43,116 INFO   MISO still failing: fuel_mix_D-2
 2026-11-25 05:13:43,116 INFO   SPP still failing: load_forecast_D
+2026-11-25 08:42:37,124 INFO report date D=2026-11-25 | DA days 2026-11-23,2026-11-24,2026-11-25 | RT day 2026-11-23 | ISOs MISO,SPP
+2026-11-25 08:42:37,525 INFO MISO   da_lmp_D               ok  rows=120   0.4s
+2026-11-25 08:42:37,813 INFO MISO   da_lmp_D-1             ok  rows=120   0.3s
+2026-11-25 08:42:38,056 INFO MISO   da_lmp_D-2             ok  rows=120   0.2s
+2026-11-25 08:42:38,343 INFO MISO   rt_lmp_D-2             ok  rows=120   0.3s
+2026-11-25 08:42:38,567 INFO MISO   as_da_D                ok  rows=72    0.2s
+2026-11-25 08:42:38,827 INFO MISO   as_da_D-1              ok  rows=72    0.3s
+2026-11-25 08:42:38,903 INFO MISO   load_forecast_D        ok  rows=24    0.1s
+2026-11-25 08:42:38,962 INFO MISO   load_forecast_D-2      ok  rows=24    0.1s
+2026-11-25 08:42:39,042 INFO MISO   load_actual_D-2        ok  rows=24    0.1s
+2026-11-25 08:42:39,043 WARNING MISO   fuel_mix_D-2           attempt 1 failed: NotSupported: Only 'latest', 'today', and yesterday's date are supported
+2026-11-25 08:42:59,044 WARNING MISO   fuel_mix_D-2           attempt 2 failed: NotSupported: Only 'latest', 'today', and yesterday's date are supported
+2026-11-25 08:42:59,044 ERROR MISO   fuel_mix_D-2           FAILED
+2026-11-25 08:42:59,044 INFO MISO done in 22s
+2026-11-25 08:43:03,660 INFO SPP    da_lmp_D               ok  rows=48    4.6s
+2026-11-25 08:43:06,930 INFO SPP    da_lmp_D-1             ok  rows=48    3.3s
+2026-11-25 08:43:10,227 INFO SPP    da_lmp_D-2             ok  rows=48    3.3s
+2026-11-25 08:43:10,470 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-25 08:46:46,160 INFO SPP    rt_lmp_D-2             ok  rows=48    215.9s
+2026-11-25 08:46:46,385 INFO SPP    as_da_D                ok  rows=168   0.2s
+2026-11-25 08:46:46,612 INFO SPP    as_da_D-1              ok  rows=168   0.2s
+2026-11-25 08:46:46,869 INFO SPP    load_forecast_D        ok  rows=24    0.3s
+2026-11-25 08:46:47,173 INFO SPP    load_forecast_D-2      ok  rows=24    0.3s
+2026-11-25 08:46:47,497 INFO SPP    load_actual_D-2        ok  rows=24    0.3s
+2026-11-25 08:47:07,815 INFO SPP    fuel_mix_D-2           ok  rows=264   20.3s
+2026-11-25 08:47:07,815 INFO SPP done in 249s
+2026-11-25 08:47:07,864 INFO this run: datasets ok 19/20 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 504, 'fuel_mix': 1440, 'gas_prices': 1}
+2026-11-25 08:47:07,865 INFO   MISO still failing: fuel_mix_D-2
