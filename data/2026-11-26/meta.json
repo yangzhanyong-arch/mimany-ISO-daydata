@@ -3,7 +3,7 @@
   "da_day": "2026-11-26",
   "da_prev_day": "2026-11-25",
   "rt_day": "2026-11-24",
-  "generated_at_utc": "2026-11-26T04:38:40Z",
+  "generated_at_utc": "2026-11-26T08:32:57Z",
   "gridstatus_version": "0.37.0",
   "timezones": {
     "CAISO": "US/Pacific",
@@ -62,7 +62,7 @@
   "rows": {
     "prices": 2780,
     "as_prices": 3576,
-    "load": 480,
+    "load": 504,
     "fuel_mix": 1632,
     "gas_prices": 1
   },
@@ -383,22 +383,22 @@
       "da_lmp_D": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.9
+        "seconds": 5.0
       },
       "da_lmp_D-1": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.8
+        "seconds": 4.7
       },
       "da_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 3.9
+        "seconds": 4.4
       },
       "rt_lmp_D-2": {
         "ok": true,
         "rows": 48,
-        "seconds": 250.1
+        "seconds": 297.5
       },
       "as_da_D": {
         "ok": true,
@@ -408,11 +408,12 @@
       "as_da_D-1": {
         "ok": true,
         "rows": 168,
-        "seconds": 0.3
+        "seconds": 0.4
       },
       "load_forecast_D": {
-        "ok": false,
-        "error": "NoDataFoundException: No load forecast by BAA data found for 2026-11-26"
+        "ok": true,
+        "rows": 24,
+        "seconds": 0.3
       },
       "load_forecast_D-2": {
         "ok": true,
@@ -422,12 +423,12 @@
       "load_actual_D-2": {
         "ok": true,
         "rows": 24,
-        "seconds": 0.5
+        "seconds": 0.3
       },
       "fuel_mix_D-2": {
         "ok": true,
         "rows": 264,
-        "seconds": 26.1
+        "seconds": 30.0
       }
     }
   },
@@ -449,6 +450,12 @@
         "MISO",
         "NYISO",
         "ISONE",
+        "SPP"
+      ]
+    },
+    {
+      "at_utc": "2026-11-26T08:32:57Z",
+      "isos": [
         "SPP"
       ]
     }
