@@ -1,0 +1,86 @@
+2026-11-27 04:35:29,501 INFO report date D=2026-11-27 | DA days 2026-11-25,2026-11-26,2026-11-27 | RT day 2026-11-25 | ISOs CAISO,ERCOT,PJM,MISO,NYISO,ISONE,SPP
+2026-11-27 04:35:34,957 INFO CAISO  da_lmp_D               ok  rows=72    5.5s
+2026-11-27 04:35:40,337 INFO CAISO  da_lmp_D-1             ok  rows=72    5.4s
+2026-11-27 04:35:45,736 INFO CAISO  da_lmp_D-2             ok  rows=72    5.4s
+2026-11-27 04:35:51,788 INFO CAISO  rt_lmp_D-2             ok  rows=72    6.1s
+2026-11-27 04:36:04,492 INFO CAISO  as_da_D-1_D            ok  rows=192   12.7s
+2026-11-27 04:36:08,748 INFO CAISO  load_forecast_D        ok  rows=24    4.3s
+2026-11-27 04:36:17,244 INFO CAISO  load_forecast_D-2      ok  rows=24    8.5s
+2026-11-27 04:36:17,511 INFO CAISO  load_actual_D-2        ok  rows=24    0.3s
+2026-11-27 04:36:17,628 INFO CAISO  fuel_mix_D-2           ok  rows=312   0.1s
+2026-11-27 04:36:22,091 INFO CAISO  gas_D-2                ok  rows=1     4.5s
+2026-11-27 04:36:22,091 INFO CAISO done in 53s
+2026-11-27 04:36:23,430 INFO ERCOT  da_lmp_D               ok  rows=120   1.3s
+2026-11-27 04:36:24,459 INFO ERCOT  da_lmp_D-1             ok  rows=120   1.0s
+2026-11-27 04:36:26,430 INFO ERCOT  da_lmp_D-2             ok  rows=120   2.0s
+2026-11-27 04:37:19,476 INFO ERCOT  rt_lmp_D-2             ok  rows=120   53.0s
+2026-11-27 04:37:20,645 INFO ERCOT  as_da_D                ok  rows=120   1.2s
+2026-11-27 04:37:21,708 INFO ERCOT  as_da_D-1              ok  rows=120   1.1s
+2026-11-27 04:38:10,219 INFO ERCOT  as_rt_D-2              ok  rows=24    48.5s
+2026-11-27 04:38:11,346 INFO ERCOT  load_forecast_D        ok  rows=24    1.1s
+2026-11-27 04:38:11,398 INFO ERCOT  load_actual_D-2        ok  rows=24    0.0s
+2026-11-27 04:38:11,669 INFO ERCOT  fuel_mix_D-2           ok  rows=192   0.3s
+2026-11-27 04:38:11,670 INFO ERCOT done in 110s
+2026-11-27 04:38:16,441 INFO PJM    da_lmp_D               ok  rows=120   4.2s
+2026-11-27 04:38:20,839 INFO PJM    da_lmp_D-1             ok  rows=120   4.4s
+2026-11-27 04:38:24,760 INFO PJM    da_lmp_D-2             ok  rows=120   3.9s
+2026-11-27 04:38:25,526 WARNING PJM verified RT not available (No data found for rt_hrl_lmps); using unverified
+2026-11-27 04:38:25,944 INFO PJM    rt_lmp_D-2             ok  rows=120   1.2s
+2026-11-27 04:38:26,669 INFO PJM    as_da_D                ok  rows=120   0.7s
+2026-11-27 04:38:27,364 INFO PJM    as_da_D-1              ok  rows=120   0.7s
+2026-11-27 04:38:28,783 INFO PJM    load_forecast_D        ok  rows=24    1.4s
+2026-11-27 04:38:29,516 INFO PJM    load_forecast_D-2      ok  rows=24    0.7s
+2026-11-27 04:38:30,809 INFO PJM    load_actual_D-2        ok  rows=24    1.3s
+2026-11-27 04:38:31,202 INFO PJM    fuel_mix_D-2           ok  rows=240   0.4s
+2026-11-27 04:38:31,202 INFO PJM done in 20s
+2026-11-27 04:38:31,647 INFO MISO   da_lmp_D               ok  rows=120   0.4s
+2026-11-27 04:38:32,026 INFO MISO   da_lmp_D-1             ok  rows=120   0.4s
+2026-11-27 04:38:32,420 INFO MISO   da_lmp_D-2             ok  rows=120   0.4s
+2026-11-27 04:38:32,768 INFO MISO   rt_lmp_D-2             ok  rows=120   0.3s
+2026-11-27 04:38:33,260 INFO MISO   as_da_D                ok  rows=72    0.5s
+2026-11-27 04:38:33,991 INFO MISO   as_da_D-1              ok  rows=72    0.7s
+2026-11-27 04:38:34,178 WARNING MISO df_al 2026-11-27 not available: HTTP Error 404: The specified blob does not exist.
+2026-11-27 04:38:34,238 INFO MISO   load_forecast_D        ok  rows=24    0.2s
+2026-11-27 04:38:34,468 INFO MISO   load_forecast_D-2      ok  rows=24    0.2s
+2026-11-27 04:38:34,647 WARNING MISO df_al 2026-11-27 not available: HTTP Error 404: The specified blob does not exist.
+2026-11-27 04:38:34,693 INFO MISO   load_actual_D-2        ok  rows=24    0.2s
+2026-11-27 04:38:34,969 INFO MISO   fuel_mix_D-2           ok  rows=192   0.3s
+2026-11-27 04:38:34,969 INFO MISO done in 4s
+2026-11-27 04:38:36,417 INFO NYISO  da_lmp_D               ok  rows=120   1.4s
+2026-11-27 04:38:37,874 INFO NYISO  da_lmp_D-1             ok  rows=120   1.5s
+2026-11-27 04:38:39,354 INFO NYISO  da_lmp_D-2             ok  rows=120   1.5s
+2026-11-27 04:38:40,663 INFO NYISO  rt_lmp_D-2             ok  rows=120   1.3s
+2026-11-27 04:38:40,930 INFO NYISO  as_da_D                ok  rows=1056  0.3s
+2026-11-27 04:38:41,302 INFO NYISO  as_da_D-1              ok  rows=1056  0.4s
+2026-11-27 04:38:41,540 INFO NYISO  load_forecast_D        ok  rows=24    0.2s
+2026-11-27 04:38:41,780 INFO NYISO  load_forecast_D-2      ok  rows=24    0.2s
+2026-11-27 04:38:42,032 INFO NYISO  load_actual_D-2        ok  rows=24    0.3s
+2026-11-27 04:38:42,693 INFO NYISO  fuel_mix_D-2           ok  rows=168   0.7s
+2026-11-27 04:38:42,693 INFO NYISO done in 8s
+2026-11-27 04:38:44,912 INFO ISONE  da_lmp_D               ok  rows=96    2.2s
+2026-11-27 04:38:46,314 INFO ISONE  da_lmp_D-1             ok  rows=96    1.4s
+2026-11-27 04:38:48,153 INFO ISONE  da_lmp_D-2             ok  rows=96    1.8s
+2026-11-27 04:38:51,851 INFO ISONE  rt_lmp_D-2             ok  rows=96    3.7s
+2026-11-27 04:38:54,310 INFO ISONE  as_rt_D-2              ok  rows=288   2.5s
+2026-11-27 04:38:54,503 INFO ISONE  load_forecast_D        ok  rows=24    0.2s
+2026-11-27 04:38:54,711 INFO ISONE  load_forecast_D-2      ok  rows=24    0.2s
+2026-11-27 04:38:55,525 INFO ISONE  load_actual_D-2        ok  rows=24    0.8s
+2026-11-27 04:38:56,363 INFO ISONE  fuel_mix_D-2           ok  rows=264   0.8s
+2026-11-27 04:38:56,364 INFO ISONE done in 14s
+2026-11-27 04:39:01,664 INFO SPP    da_lmp_D               ok  rows=48    5.3s
+2026-11-27 04:39:06,426 INFO SPP    da_lmp_D-1             ok  rows=48    4.8s
+2026-11-27 04:39:10,629 INFO SPP    da_lmp_D-2             ok  rows=48    4.2s
+2026-11-27 04:39:11,140 WARNING SPP daily RT file not available (HTTP Error 404: ); using 5-minute interval files
+2026-11-27 04:43:53,929 INFO SPP    rt_lmp_D-2             ok  rows=48    283.3s
+2026-11-27 04:43:54,268 INFO SPP    as_da_D                ok  rows=168   0.3s
+2026-11-27 04:43:54,571 INFO SPP    as_da_D-1              ok  rows=168   0.3s
+2026-11-27 04:43:54,571 WARNING SPP    load_forecast_D        attempt 1 failed: NoDataFoundException: No load forecast by BAA data found for 2026-11-27
+2026-11-27 04:44:14,573 WARNING SPP    load_forecast_D        attempt 2 failed: NoDataFoundException: No load forecast by BAA data found for 2026-11-27
+2026-11-27 04:45:14,574 WARNING SPP    load_forecast_D        attempt 3 failed: NoDataFoundException: No load forecast by BAA data found for 2026-11-27
+2026-11-27 04:45:14,574 ERROR SPP    load_forecast_D        FAILED
+2026-11-27 04:45:15,088 INFO SPP    load_forecast_D-2      ok  rows=24    0.5s
+2026-11-27 04:45:15,777 INFO SPP    load_actual_D-2        ok  rows=24    0.7s
+2026-11-27 04:45:43,537 INFO SPP    fuel_mix_D-2           ok  rows=264   27.8s
+2026-11-27 04:45:43,538 INFO SPP done in 407s
+2026-11-27 04:45:43,617 INFO this run: datasets ok 69/70 | file rows {'prices': 2784, 'as_prices': 3576, 'load': 480, 'fuel_mix': 1632, 'gas_prices': 1}
+2026-11-27 04:45:43,618 INFO   SPP still failing: load_forecast_D
